@@ -10,4 +10,4 @@
    * [5. Property Delegates](Part 2 - Usage Basics/5. Property Delegates.md)
    * [6. Builders Part II - Data Controls](Part 2 - Usage Basics/6. Builders Part II - Data Controls.md)
    * 7. [Builders Part III- Type-Safe CSS](Part 2 - Usage Basics/7. Builders Part V - CSS.md)
-   * 8 Builders Part IV - Layouts and Menus](Part 2 - Usage Basics/7. Builders Part III - Layouts and Menus.md)
+   * 8. Builders Part IV - Layouts and Menus](Part 2 - Usage Basics/7. Builders Part III - Layouts and Menus.md)
