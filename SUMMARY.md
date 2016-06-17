@@ -10,4 +10,4 @@
   * [5. Builders Part II - Data Controls](Part 2 - Usage Basics/5. Builders Part II - Data Controls.md)
   * [6. Builders Part III - Type Safe CSS](Part 2 - Usage Basics/6. Builders Part III - CSS.md)
   * [7. Builders Part IV - Layouts and Menus](Part 2 - Usage Basics/7. Builders Part IV - Layouts and Menus.md)
-  * [8. Builders Part V - Charts](Part 2 - Usage Basics/9. Builders Part V - Charts.md)
+  * [8. Builders Part V - Charts](Part 2 - Usage Basics/8. Builders Part V - Charts.md)
