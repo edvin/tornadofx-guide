@@ -8,6 +8,7 @@ This is a bit challenging to organize because some of these utilities are helpfu
 ##10. Concurrency and Error Handling
 - [Async Task Execution](https://github.com/edvin/tornadofx/wiki/Async-Task-Execution#async-task-execution)
 - [Async Items for Data Components](https://github.com/edvin/tornadofx/wiki/Async-Task-Execution#async-items-for-data-driven-components)
+- FX Run and Wait
 - [Error Handler](https://github.com/edvin/tornadofx/wiki/Error-Handler#error-handler)
 
 ##11. Data Tools
@@ -16,6 +17,8 @@ This is a bit challenging to organize because some of these utilities are helpfu
 - Clipboard
 
 ##12. Configuration
+- Program Parameters and Hot View Reloading
+- Internationalization
 - [Component Configuration](https://github.com/edvin/tornadofx/wiki/Config)
 - [Preferences](https://github.com/edvin/tornadofx/pull/107)
 
