@@ -14,7 +14,6 @@ This is a bit challenging to organize because some of these utilities are helpfu
 - [REST Client](https://github.com/edvin/tornadofx/wiki/JsonModel)
 - [SortedFilteredList](https://github.com/edvin/tornadofx/wiki/Utilities#sortedfilteredlist)
 - Clipboard
-- 
 
 ##12. Configuration
 - [Component Configuration](https://github.com/edvin/tornadofx/wiki/Config)
