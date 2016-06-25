@@ -24,6 +24,13 @@ This is a bit challenging to organize because some of these utilities are helpfu
 - [JavaFX Interop](https://github.com/edvin/tornadofx/wiki/Integrate-with-existing-JavaFX-Applications)
 
 ##14. TornadoFX Plugin
+- Configuring an Application
+- Add View
+- Inject Component
+- Intentions
+  - Convert field members to JavaFX Properties
+  - Add TableView Columns
+- Project Templates
 
 ##Appendix 
 - [Third Party Injection](https://github.com/edvin/tornadofx/wiki/Dependency-Injection#third-party-injection-frameworks)
