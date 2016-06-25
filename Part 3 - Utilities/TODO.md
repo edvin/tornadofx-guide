@@ -19,10 +19,11 @@ This is a bit challenging to organize because some of these utilities are helpfu
 - [Component Configuration](https://github.com/edvin/tornadofx/wiki/Config)
 - [Preferences](https://github.com/edvin/tornadofx/pull/107)
 
-##12. Java Interop
+##13. Java Interop
 - [POJO Binding](https://github.com/edvin/tornadofx/wiki/Utilities#pojo-binding)
 - [JavaFX Interop](https://github.com/edvin/tornadofx/wiki/Integrate-with-existing-JavaFX-Applications)
 
+##14. TornadoFX Plugin
 
 ##Appendix 
 - [Third Party Injection](https://github.com/edvin/tornadofx/wiki/Dependency-Injection#third-party-injection-frameworks)
