@@ -15,6 +15,8 @@ This is a bit challenging to organize because some of these utilities are helpfu
 - [REST Client](https://github.com/edvin/tornadofx/wiki/JsonModel)
 - [SortedFilteredList](https://github.com/edvin/tornadofx/wiki/Utilities#sortedfilteredlist)
 - Clipboard
+- [Resources](https://github.com/edvin/tornadofx/wiki/Resources)
+- 
 
 ##12. Configuration
 - Program Parameters and Hot View Reloading
