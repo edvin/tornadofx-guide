@@ -35,4 +35,4 @@ This is a bit challenging to organize because some of these utilities are helpfu
 ##Appendix 
 - [Third Party Injection](https://github.com/edvin/tornadofx/wiki/Dependency-Injection#third-party-injection-frameworks)
 - [Logging](https://github.com/edvin/tornadofx/wiki/Logging)
-- Extension Functions 
+- List of Extension Functions 
