@@ -3,7 +3,6 @@
 - - Typical BorderPane application
 - A Controller-backed TableView application
 
-
 ##JavaFX Interop
 - Calling TornadoFX from JavaFX
 - Calling JavaFX from TornadoFX
