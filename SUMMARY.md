@@ -13,5 +13,5 @@
   * [8. Builders Part V - Charts](Part 2 - Usage Basics/8. Builders Part V - Charts.md)
   * [9. Builders Part VI - Shapes and Animation](Part 2 - Usage Basics/Builders Part VI - Shapes and Animation.md)
   * [10. FXML](Part 2 - Usage Basics/10. FXML.md)
-* Part 5 - Appendix
+* [Part 5 - Appendix](Part 5 - Appendix/Appendix A.md)
   * [Appendix A - Reference](Part 5 - Appendix/Appendix A.md)
