@@ -1,7 +1,8 @@
 ##TornadoFX Patternss
-- Typical BorderPane application
-- A Controller-backed TableView application
 - MVP and MVC
+- - Typical BorderPane application
+- A Controller-backed TableView application
+
 
 ##JavaFX Interop
 - Calling TornadoFX from JavaFX
