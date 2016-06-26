@@ -2,7 +2,7 @@
 
 ##1 - Property Delegates
 
-Kotlin is packed with great language features, and we have seen TornadoFX already exploit some of them. But there is another that comes in handy when dealing with nuanced property behavior. [Delegated properties](https://kotlinlang.org/docs/reference/delegated-properties.html) are a powerful way to specify how a property works and create re-usable policies for those properties. On top of the ones that exist in Kotlin's standard library, TornadoFX provides a few more property delegates that are particularly helpful for JavaFX development. 
+Kotlin is packed with great language features, and [delegated properties](https://kotlinlang.org/docs/reference/delegated-properties.html) are a powerful way to specify how a property works and create re-usable policies for those properties. On top of the ones that exist in Kotlin's standard library, TornadoFX provides a few more property delegates that are particularly helpful for JavaFX development. 
 
 ###Single Assign 
 
