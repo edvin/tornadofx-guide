@@ -1,4 +1,4 @@
-##TornadoFX Patternss
+##TornadoFX Patterns
 - MVP and MVC
 - - Typical BorderPane application
 - A Controller-backed TableView application
