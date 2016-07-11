@@ -33,8 +33,8 @@ class PersonEditor : View() {
                     column("Title", Person::titleProperty)
 
                     // Edit the currently selected person
-                    selectionModel.selectedItemProperty().addListener { observable, oldValue, newValue ->
-                        editPerson(newValue)
+                    selectionModel.selectedItemProperty().onChange {
+                        editPerson(it)
                     }
                 }
             }
