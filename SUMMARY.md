@@ -11,7 +11,7 @@
    * [6. Builders Part III - Type Safe CSS](Part 2 - Usage Basics/6. Builders Part III - CSS.md)
    * [7. Builders Part IV - Layouts and Menus](Part 2 - Usage Basics/7. Builders Part IV - Layouts and Menus.md)
    * [8. Builders Part V - Charts](Part 2 - Usage Basics/8. Builders Part V - Charts.md)
-   * [9. Builders Part VI - Shapes and Animation](Part 2 - Usage Basics/Builders Part VI - Shapes and Animation.md)
+   * [9. Builders Part VI - Shapes and Animation](Part 2 - Usage Basics/9. Builders Part VI - Shapes and Animation.md)
    * [10. FXML](Part 2 - Usage Basics/10. FXML.md)
 * [Part 4 - Design Patterns](Part 4 - Design Patterns)
 	* [1. View Model](Part 4 - Design Patterns/ViewModel.md)
