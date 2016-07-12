@@ -6,6 +6,18 @@ To help with implementing these patterns, TornadoFX provides a tool called `View
 
 ## A typical use case
 
+Say you have a given domain type `Person`. We allow its two properties to be nullable for the sake of editing, and those values may have to be inputted later by the user. 
+
+```kotlin
+class Person(name: String? = null, title: String? = null) {
+    var name by property(name)
+    fun nameProperty() = getProperty(Person::name)
+
+    var title by property(title)
+    fun titleProperty() = getProperty(Person::title)
+}
+```
+
 Consider a master detail view where you have a `TableView` displaying a list of people, and a `Form` where the currently selected user's information can be edited. Before we get into the ViewModel we will create a minimalistic version of this View without using the View Model.
 
 ![](http://i.imgur.com/KDWkFBy.png)
@@ -65,8 +77,13 @@ class PersonEditor : View() {
 
     private fun editPerson(person: Person?) {
         if (person != null) {
+            prevSelection?.apply {
+                nameProperty().unbindBidirectional(nameField.textProperty())
+                titleProperty().unbindBidirectional(titleField.textProperty())
+            }
             nameField.bind(person.nameProperty())
             titleField.bind(person.titleProperty())
+            prevSelection = person
         }
     }
 
@@ -132,9 +149,15 @@ class PersonEditor : View() {
                         field("Title") {
                             textfield(model.title)
                         }
-                        button("Save") {
+                       button("Save") {
+                            disableProperty().bind(model.dirtyStateProperty().not())
                             setOnAction {
                                 save()
+                            }
+                        }
+                        button("Reset") {
+                            setOnAction {
+                                model.rollback()
                             }
                         }
                     }
