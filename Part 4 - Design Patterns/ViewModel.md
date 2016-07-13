@@ -235,7 +235,7 @@ button("Save") {
 
 We connect the `disableProperty` of the button with an observable boolean property that is true when the model is not dirty (notice the `.not()` call to create a negated binding. Note that there is also a function called `isDirty` that returns a plain `Boolean` value representing the current state of the model.
 
-There is also a function called `isDirty` which returns a boolean representing the dirty state.
+There is also a `val` called `isDirty` which returns a boolean representing the dirty state.
 
 ## Dirty Properties
 
@@ -248,8 +248,10 @@ val nameWasChanged = model.isDirty(model.name)
 There is also a shorter version that does the same:
 
 ```kotlin
-val nameWasChange = model.isDirty { name }
+val nameWasChange = model.name.isDirty
 ```
+
+The shorter version is an extension `val` on `Property<T>` but it will only work for properties that are bound inside a ViewModel.
 
 Correspondingly you will find `model.isNotDirty` properties as well.
 
