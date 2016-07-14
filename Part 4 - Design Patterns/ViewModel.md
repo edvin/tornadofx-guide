@@ -326,7 +326,7 @@ The code executed inside the `rebind` block above will be carried out and then a
 
 ```kotlin
 model.person = person2
-model.rebind()
+model.rollback()
 ```
 
 The form you choose is up to you, but the first form makes sure you don't forget to call rebind. After `rebind` is called, the model is not dirty and all values will reflect the ones form the new source object or source objects. It's important to note that you can pass multiple source objects to a view model and update all or some of them as you see fit.
