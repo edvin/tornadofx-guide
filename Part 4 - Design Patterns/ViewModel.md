@@ -294,6 +294,16 @@ class PersonVarViewModel(person: Person) : ViewModel() {
 
 As you can see, it's very easy to convert any property type to an observable property. With the upcoming Kotlin 1.1 the above syntax will be further simplified for non-JavaFX based properties.
 
+## Specific Property subtypes (IntegerProperty, BooleanProperty)
+
+If you bind for example an `IntegerProperty`, the type of the facade property will look like `Property<Int>` but it is infact an `IntegerProperty` under the hood. If you need to access the special functions provided by `IntegerProperty`, you will have to cast the bind result:
+
+```kotlin
+val age = bind { person.ageProperty() } as IntegerProperty
+```
+
+The reason for this is an unfortunate shortcoming on the type system that prevents the compiler from differentiating between overloaded `bind` functions for these specific types, so the single `bind` function inside ViewModel inspects the property type and returns the best match, but unfortunately the return type signature has to be `Property<T>` for now.
+
 ## Rebinding
 
 As you saw in the TableView example above, it is possible to change the domain object that is wrapped by the ViewModel. This test case from the framework tests sheds some more light on that:
