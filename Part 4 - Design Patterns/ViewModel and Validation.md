@@ -1,4 +1,4 @@
-# ViewModel
+# ViewModel and Validation
 
 TornadoFX doesn't force any particular architectural pattern on you as a developer, and works equally great with both [MVC](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller), [MVP](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93presenter) and their derivatives.
 
@@ -354,3 +354,46 @@ model.rebindOnChange(table.selectionModel.selectedItemProperty()) {
 ```
 
 The above example is included to clarify how the `rebindOnChange` function works under the hood. For real use cases involving a TableView you should opt for the shorter version.
+
+# Validation
+
+Almost every application needs to check that the input supplied by the user conforms to a set of rules or are otherwise acceptable. TornadoFX has an extensible validation and decoration framework
+built in and it has very tight integration with ViewModel. We will first look at validation as a standalone feature before we integrate it with the ViewModel.
+
+## Under the hood
+
+The following explanation is a bit verbose and does not reflect the way you would write validation code in your application. This section will provide you with a solid understanding of how
+validation works and how the individual pieces fit together.
+
+### Validator
+
+A `Validator` knows how to inspect user input of a specified type and will return a `ValidationMessage` with a `ValidationSeverity` describing how the input compares to the expected input for a specific control.
+If a `Validator` deems that there is nothing to report for an input value, it returns `null`. A text message can optionally accompany the `ValidationMessage`, and would normally be displayed by the `Decorator`
+configured in the `ValidationContext`. More on decorators later.
+
+The following severity levels are supported:
+   
+- `Error` - Input was not accepted
+- `Warning` - Input is not ideal, but accepted
+- `Success` - Input is accepted
+- `Info` - Input is accepted
+
+´   
+There are multiple severity levels representing successful input to easier provide the contextually correct feedback in most cases. For example, you might want to give an informational message
+for a field no matter the input value, or specifically mark fields with a green checkbox when they are entered. The only severity that will result in an invalid status is te `Error` level.   
+
+### ValidationTrigger
+
+By default validation will happen when the input value changes. The input value is always an `ObservableValue<T>`, and the default trigger simply listens for changes. You can however choose
+to validate when the input field looses focus, or when a save button is clicked for instance. The following ValidationTriggers can be configured for each validator:
+ 
+- `ValidationTrigger.OnChange()` - Validate when input value changes, optionally after a given delay in milliseconds
+- `ValidationTrigger.OnBlur()` - Validate when the input field looses focus
+- `ValidationTrigger.Never()` - Only validate when `ValidationContext.validate()` is called
+  
+### ValidationContext
+
+Normally you would validate user input from multiple controls or input fields at once. You can gather these validators in a `ValidationContext` so you can check if all validators are valid, or
+ask the validation context to perform validation for all fields at any given time. The context also controls what kind of decorator will be used to convey the validation message for each field.
+
+## Decorator
