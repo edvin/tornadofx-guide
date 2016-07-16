@@ -378,7 +378,6 @@ The following severity levels are supported:
 - `Success` - Input is accepted
 - `Info` - Input is accepted
 
-´   
 There are multiple severity levels representing successful input to easier provide the contextually correct feedback in most cases. For example, you might want to give an informational message
 for a field no matter the input value, or specifically mark fields with a green checkbox when they are entered. The only severity that will result in an invalid status is te `Error` level.   
 
@@ -397,3 +396,4 @@ Normally you would validate user input from multiple controls or input fields at
 ask the validation context to perform validation for all fields at any given time. The context also controls what kind of decorator will be used to convey the validation message for each field.
 
 ## Decorator
+
