@@ -15,8 +15,8 @@
    * [10. FXML](Part 2 - Usage Basics/10. FXML.md)
 * [Part 4 - Design Patterns](Part 4 - Design Patterns)
 	* [1. View Model](Part 4 - Design Patterns/ViewModel and Validation.md)
-* [Part 5 - Appendix](Part 5 - Appendix)
-	* [1. Appendix A](Part 5 - Appendix//Appendix A.md)
-	* [2. View Model](Part 5 - Appendix/LayoutDebugger.md)
+* [Part 4 - Appendix](Part 4 - Appendix)
+	* [1. Appendix A](Part 4 - Appendix//Appendix A.md)
+	* [2. View Model](Part 4 - Appendix/LayoutDebugger.md)
 
 
