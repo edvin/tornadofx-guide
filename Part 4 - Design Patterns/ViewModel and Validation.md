@@ -37,37 +37,33 @@ class PersonEditor : View() {
         title = "Person Editor"
 
         with(root) {
-            center {
-                // TableView showing a list of people
-                tableview(persons) {
-                    personTable = this
-                    column("Name", Person::nameProperty)
-                    column("Title", Person::titleProperty)
+            // TableView showing a list of people
+            center = tableview(persons) {
+                personTable = this
+                column("Name", Person::nameProperty)
+                column("Title", Person::titleProperty)
 
-                    // Edit the currently selected person
-                    selectionModel.selectedItemProperty().onChange {
-                        editPerson(it)
-                    }
+                // Edit the currently selected person
+                selectionModel.selectedItemProperty().onChange {
+                    editPerson(it)
                 }
             }
 
-            right {
-                form {
-                    fieldset("Edit person") {
-                        field("Name") {
-                            textfield() {
-                                nameField = this
-                            }
+            right = form {
+                fieldset("Edit person") {
+                    field("Name") {
+                        textfield() {
+                            nameField = this
                         }
-                        field("Title") {
-                            textfield() {
-                                titleField = this
-                            }
+                    }
+                    field("Title") {
+                        textfield() {
+                            titleField = this
                         }
-                        button("Save") {
-                            setOnAction {
-                                save()
-                            }
+                    }
+                    button("Save") {
+                        setOnAction {
+                            save()
                         }
                     }
                 }
@@ -128,37 +124,33 @@ class PersonEditor : View() {
         title = "Person Editor"
 
         with(root) {
-            center {
-                tableview(persons) {
-                    column("Name", Person::nameProperty)
-                    column("Title", Person::titleProperty)
+            center = tableview(persons) {
+                column("Name", Person::nameProperty)
+                column("Title", Person::titleProperty)
 
-                    // Update the person inside the view model on selection change
-                    model.rebindOnChange(this) { selectedPerson ->
-                        person = selectedPerson ?: Person()
-                    }
+                // Update the person inside the view model on selection change
+                model.rebindOnChange(this) { selectedPerson ->
+                    person = selectedPerson ?: Person()
                 }
             }
 
-            right {
-                form {
-                    fieldset("Edit person") {
-                        field("Name") {
-                            textfield(model.name)
+            right = form {
+                fieldset("Edit person") {
+                    field("Name") {
+                        textfield(model.name)
+                    }
+                    field("Title") {
+                        textfield(model.title)
+                    }
+                   button("Save") {
+                        disableProperty().bind(model.dirtyStateProperty().not())
+                        setOnAction {
+                            save()
                         }
-                        field("Title") {
-                            textfield(model.title)
-                        }
-                       button("Save") {
-                            disableProperty().bind(model.dirtyStateProperty().not())
-                            setOnAction {
-                                save()
-                            }
-                        }
-                        button("Reset") {
-                            setOnAction {
-                                model.rollback()
-                            }
+                    }
+                    button("Reset") {
+                        setOnAction {
+                            model.rollback()
                         }
                     }
                 }
@@ -264,9 +256,9 @@ To find the backing object value for a property you can call `model.backingValue
 You've probably been wondering about how the PersonModel is implemented. Well, here it is:
 
 ```kotlin
-class PersonModel(var person: Person) : ViewModel() {
-    val name = bind { person.nameProperty() }
-    val title = bind { person.titleProperty() }
+class PersonModel(var source: Person) : ViewModel() {
+    val name = bind { source.nameProperty() }
+    val title = bind { source.titleProperty() }
 }
 ```
 
@@ -282,13 +274,13 @@ You probably wondered how to deal with domain objects that doesn't use JavaFX pr
 
 ```kotlin
 // Java POJO getter/setter property
-class JavaPersonViewModel(person: JavaPerson) : ViewModel() {
-    val name = bind { person.observable(JavaPerson::getName, JavaPerson::setName) }
+class JavaPersonViewModel(source: JavaPerson) : ViewModel() {
+    val name = bind { source.observable(JavaPerson::getName, JavaPerson::setName) }
 }
 
 // Kotlin var property
-class PersonVarViewModel(person: Person) : ViewModel() {
-    val name = bind { person.observable(Person::name) }
+class PersonVarViewModel(source: Person) : ViewModel() {
+    val name = bind { source.observable(Person::name) }
 }
 ```
 
@@ -299,7 +291,7 @@ As you can see, it's very easy to convert any property type to an observable pro
 If you bind for example an `IntegerProperty`, the type of the facade property will look like `Property<Int>` but it is infact an `IntegerProperty` under the hood. If you need to access the special functions provided by `IntegerProperty`, you will have to cast the bind result:
 
 ```kotlin
-val age = bind { person.ageProperty() } as IntegerProperty
+val age = bind { source.ageProperty() } as IntegerProperty
 ```
 
 The reason for this is an unfortunate shortcoming on the type system that prevents the compiler from differentiating between overloaded `bind` functions for these specific types, so the single `bind` function inside ViewModel inspects the property type and returns the best match, but unfortunately the return type signature has to be `Property<T>` for now.
@@ -316,10 +308,7 @@ As you saw in the TableView example above, it is possible to change the domain o
     val model = PersonModel(person1)
     assertEquals(model.name, "Person 1")
 
-    model.rebind {
-        person = person2
-    }
-
+    model.rebind { source = person2 }
     assertEquals(model.name, "Person 2")
 }
 ```
@@ -327,15 +316,13 @@ As you saw in the TableView example above, it is possible to change the domain o
 The test creates two `Person` objects and a `ViewModel`. The model is initialised with the first person object. It then checks that `model.name` corresponds to the name in `person1`. Now something weird happens:
 
 ```kotlin
-model.rebind {
-    person = person2
-}
+model.rebind { source = person2 }
 ```
 
 The code executed inside the `rebind` block above will be carried out and then all the properties of the model is updated with values from the new source object. This is actually analogous to writing:
 
 ```kotlin
-model.person = person2
+model.source = person2
 model.rollback()
 ```
 
@@ -349,7 +336,7 @@ As you saw, TableView has special rebind support for the `selectionModel.selecte
 
 ```kotlin
 model.rebindOnChange(table.selectionModel.selectedItemProperty()) {
-    person = it ?: Person() 
+    source = it ?: Person() 
 }
 ```
 
@@ -357,8 +344,8 @@ The above example is included to clarify how the `rebindOnChange` function works
 
 # Validation
 
-Almost every application needs to check that the input supplied by the user conforms to a set of rules or are otherwise acceptable. TornadoFX has an extensible validation and decoration framework
-built in and it has very tight integration with ViewModel. We will first look at validation as a standalone feature before we integrate it with the ViewModel.
+Almost every application needs to check that the input supplied by the user conforms to a set of rules or are otherwise acceptable. TornadoFX sports an extensible validation and decoration framework. 
+We will first look at validation as a standalone feature before we integrate it with the ViewModel.
 
 ## Under the hood
 
@@ -378,7 +365,6 @@ The following severity levels are supported:
 - `Success` - Input is accepted
 - `Info` - Input is accepted
 
-´   
 There are multiple severity levels representing successful input to easier provide the contextually correct feedback in most cases. For example, you might want to give an informational message
 for a field no matter the input value, or specifically mark fields with a green checkbox when they are entered. The only severity that will result in an invalid status is te `Error` level.   
 
@@ -387,9 +373,9 @@ for a field no matter the input value, or specifically mark fields with a green 
 By default validation will happen when the input value changes. The input value is always an `ObservableValue<T>`, and the default trigger simply listens for changes. You can however choose
 to validate when the input field looses focus, or when a save button is clicked for instance. The following ValidationTriggers can be configured for each validator:
  
-- `ValidationTrigger.OnChange()` - Validate when input value changes, optionally after a given delay in milliseconds
-- `ValidationTrigger.OnBlur()` - Validate when the input field looses focus
-- `ValidationTrigger.Never()` - Only validate when `ValidationContext.validate()` is called
+- `OnChange` - Validate when input value changes, optionally after a given delay in milliseconds
+- `OnBlur` - Validate when the input field looses focus
+- `Never` - Only validate when `ValidationContext.validate()` is called
   
 ### ValidationContext
 
@@ -397,3 +383,101 @@ Normally you would validate user input from multiple controls or input fields at
 ask the validation context to perform validation for all fields at any given time. The context also controls what kind of decorator will be used to convey the validation message for each field.
 
 ## Decorator
+
+The `decorationProvider` of a ValidationContext is in charge of providing feedback when a `ValidationMessage` is associated with an input. By default this is an instance of `SimpleMessageDecorator`
+which will mark the input field with a colored triangle in the topper left corner and display a popup with the message while the input has focus.
+
+![](http://i.imgur.com/3tw57fS.png)
+> The default decorator showing a required field validation message
+
+If you don't like the default decorator look you can easily create your own by implementing the `Decorator` interface:
+
+```kotlin
+interface Decorator {
+    fun decorate(node: Node)
+    fun undecorate(node: Node)
+}
+```
+
+You can assign your decorator to a given `ValidationContext` like this:
+
+```kotlin
+context.decorationProvider = MyDecorator()
+```
+
+**Tip: You can create a decorator that applies CSS style classes to your inputs instead of overlaying other nodes to provide feedback.**
+ 
+## Ad hoc validation
+
+While you will probably never do this in a real application, it is possible to set up a `ValidationContext` and apply validators to it manually. The following
+example is actually taken from the internal tests of the framework. It illustrates the concept, but is not a practical pattern in an application.
+
+```kotlin
+// Create a TextField we can attach validation to
+val input = TextField()
+
+// Define a validator that accepts input longer than 5 chars
+val validator = context.addValidator(input, input.textProperty()) {
+    if (it!!.length < 5) error("Too short") else null
+}
+
+// Simulate user input
+input.text = "abc"
+
+// Validation should fail
+assertFalse(validator.validate())
+
+// Extract the validation result
+val result = validator.result
+
+// The severity should be error
+assertTrue(result is ValidationMessage && result.severity == ValidationSeverity.Error)
+
+// Confirm valid input passes validation
+input.text = "longvalue"
+assertTrue(validator.validate())
+assertNull(validator.result)
+```
+
+Take special note of the last parameter to the `addValidator` call. This is the actual validation logic. The function is passed the
+current input for the property it validates nad must return null if there are no messages, or an instance of `ValidationMessage` if something
+is noteworthy about the input. A message with severity `Error` will cause the validation to fail. As you can see, you don't need to instantiate
+a ValidationMessage yourself, simply use one of the functions `error`, `warning`, `success` or `info` instead.
+
+# Validation with ViewModel
+
+Every ViewModel contains a `ValidationContext`, so you don't need to instantiate one yourself. The Validation framework integrates with the type
+safe builders as well, and even provides some built in validators, like the `required` validator. Going back to our person editor, we can
+make the input fields required with this simple change:
+
+```kotlin
+field("Name") {
+    textfield(model.name).required()
+}
+```
+
+That's all there is to it. The required validator optionally takes a message that will be presented to the user if the validation fails. The default text
+is "This field is required".
+
+Instead of using the built in `required` validator we can express the same thing manually:
+
+```kotlin
+field("Name") {
+    textfield(model.name).validate {
+        if (it.isNullOrBlank()) error("The name field is required") else null
+    }
+}
+```
+
+If you want to further customize the textfield, you might want to add another set of curly braces:
+
+```kotlin
+field("Name") {
+    textfield(model.name) {
+        // Manipulate the text field here
+        validate {
+            if (it.isNullOrBlank()) error("The name field is required") else null
+        }
+    }
+}
+```
