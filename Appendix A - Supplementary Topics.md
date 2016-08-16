@@ -1,391 +1,112 @@
-#Components
+#Appendix A - Reference
 
-JavaFX uses a theatrical analogy to organize an `Application` with `Stage` and `Scene` components. TornadoFX takes a different approach using `App`, `View`, `Controller`, and `Fragment` components. While the `Application`, `Stage`, and `Scene` are used by TornadoFX, the `App`, `View`, `Controller`, and `Fragment` introduces new concepts that streamline development. Many of these components are automatically maintained as singletons, and can communicate to each other through simple dependency injections. 
+##1 - Property Delegates
 
-You also have the option to utilize FXML which will be discussed much later. But first, lets extend `App` to create an entry point that launches a TornadoFX application.
+Kotlin is packed with great language features, and [delegated properties](https://kotlinlang.org/docs/reference/delegated-properties.html) are a powerful way to specify how a property works and create re-usable policies for those properties. On top of the ones that exist in Kotlin's standard library, TornadoFX provides a few more property delegates that are particularly helpful for JavaFX development. 
 
-##App and View Basics
+###Single Assign 
 
-To create a TornadoFX application, you must have at least one class that extends `App`. An **App** is the entry point to the application and specifies the initial `View`. It does in fact extend JavaFX `Application`, but you do not necessarily need to specify a `start()` or `main()` method. Typically, you just need to override and specify a `primaryView` property.
-
-But first, extend `App` to create your own implementation.
+It is often ideal to initialize properties immediately upon construction. But inevitably there are times when this simply is not feasible. When a property needs to delay its initialization until it is first called, a lazy delegate is typically used. You specify a lambda instructing how the property value is initialized when its getter is called the first time.
 
 ```kotlin
-class MyApp: App() {
-}
+val fooValue by lazy { buildExpensiveFoo() }
 ```
 
-You will next want to specify a `primaryView` and override its open field. So before we do that, we need to declare a `View` that can be assigned to it. 
-
-A **View ** contains display logic as well as a layout of Nodes, similar to the JavaFX `Stage`. It is automatically managed as a singleton and will be injected wherever it is invoked. When you declare a `View` you must specify a `root` property which can be any `Node` type, and that will hold the View's content. 
-
-In the same Kotlin file or in a new file, extend a class off of `View`. Override the abstract `root` property and assign it `VBox()` or any other `Node` you choose. 
+But there are situations where the property needs to be assigned later not by a value-supplying lambda, but rather an arbitrary external call. When we leverage type-safe builders we may want to save a `Button` to a class-level property so we can reference it later. If we do not want `myButton` to be nullable, we need to use the [`lateinit` modifier](https://kotlinlang.org/docs/reference/properties.html#late-initialized-properties). 
 
 ```kotlin
 class MyView: View() {
-    override val root = VBox()
+        override val root = VBox()
+
+        lateinit var myButton: Button
+
+        init {
+            with(root) {
+                    myButton = button("New Entry")
+            }
+       }
 }
 ```
 
-However, we might want to populate this `VBox` acting as the `root` control. Using the [initializer block](https://kotlinlang.org/docs/reference/classes.html#constructors), let's add a JavaFX `Button` and a `Label`. You can use the "plus assign" `+=` operators to add children to any `Pane` type, including `VBox`. 
+The problem with `lateinit` is it can be assigned multiple times by accident, and it is not necessary thread safe. This can lead to classic bugs associated with mutability, and you really should strive for immutability as much as possible ( *Effective Java* by Bloch, Item #13).
+
+By leveraging the `singleAssign()` delegate, you can guarantee that property is *only* assigned once. Any subsequent assignment attempts will throw a runtime error, and so will accessing it before a value is assigned. This effectively gives us the guarantee of immutability, even though it is enforced at runtime.
 
 ```kotlin
 class MyView: View() {
+        override val root = VBox()
 
-    override val root = VBox()
+        var myButton: Button by singleAssign()
 
-    init {
-        root += Button("Press Me")
-        root += Label("")
-    }
+        init {
+            with(root) {
+                    myButton = button("New Entry") //property locked
+            }
+       }
 }
 ```
 
-Commonly you may see the `with()` block used to populate the `root`. This may make not look beneficial now, but it helps streamline more complex UI's by providing a block to populate root. In the next chapter, we will simplify this even more with type-safe builders such as the `button()` and `label()` functions. 
+Even though this single assignment is not enforced at compile time, infractions are often captured early in the development process. Especially as complex builder designs evolve and variable assignments move around, `singleAssign()` is an effective tool to mitigate mutability problems and allow flexible timing for property assignments.
+
+By default, `singleAssign()` synchronizes access to its internal value. You should leave it this way especially if your application is multithreaded. If you wish to disable synchronization for whatever reason, you can pass a `SingleAssignThreadSafetyMode.NONE` value for the policy. 
 
 ```kotlin
-class MyView: View() {
-
-    override val root = VBox()
-
-    init {
-        with(root) {
-            this += Button("Press Me")
-            this += Label("Waiting")
-        }
-    }
-}
+var myButton: Button by singleAssign(SingleAssignThreadSafetyMode.NONE)
 ```
 
->'View' has a property called `primaryStage` that allows you to manipulate properties of the `Stage` backing it, such as window size
+###JavaFX Property Delegate
 
-Now switch back to your `App` class and specify this `View` as your `primaryView` using its [class reference](https://kotlinlang.org/docs/reference/reflection.html#class-references). You should now no longer have a compile error. 
+Do not confuse the JavaFX `Property` with the standard Java/Kotlin "property". The `Property` is a special type in `JavaFX` that maintains a value internally and notifies listeners of its changes. It is proprietary to JavaFX because it supports binding operations, and will notify the UI when it changes. The `Property` is a core feature of JavaFX and has its own JavaBeans-like pattern.
+
+This pattern is pretty verbose however, and even with Kotlin's syntax efficiencies it still is pretty verbose. You have to declare the traditional getter/setter as well as the `Property` item itself.
 
 ```kotlin
-class MyApp: App() {
-    override val primaryView = MyView::class
+ class Bar { 
+    private val fooProperty by lazy { SimpleObjectProperty<T>() }
+    fun fooProperty() = fooProperty
+    var foo: T
+        get() = fooProperty.get()
+        set(value) = fooProperty.set(value)
 }
 ```
 
-In totality, this should be all your code. Your `App` and `View` could be in the same file, or in separate files. 
+Fortunately, TornadoFX can abstract most of this away. By delegating a Kotlin property to a JavaFX `property()`, TornadoFX will get/set that value against a new `Property` instance. To follow JavaFX's convention and provide the `Property` object to UI components, you can create a function that fetches the `Property` from TornadoFX and returns it.
 
 ```kotlin
-import javafx.scene.control.Button
-import javafx.scene.control.Label
-import javafx.scene.layout.VBox
-import tornadofx.*
-
-class MyApp: App() {
-    override val primaryView = MyView::class
-}
-
-class MyView: View() {
-
-    override val root = VBox()
-
-    init {
-        with(root) {
-            this += Button("Press Me")
-            this += Label("Waiting")
-        }
-    }
+class Bar {
+    var foo by property<String>()
+    fun fooProperty() = getProperty(Bar::foo)
 }
 ```
 
-Next we will see how to run this application. 
+Especially as you start working with `TableView` and other complex controls, you will likely find this pattern helpful when creating model classes. You will see this pattern used throughout this book.
 
-##Application Startup
-
-For launching and testing the `App`, we will use Intellij IDEA. Navigate to *Run*→*Edit Configurations*.
-
-![](http://i.imgur.com/msTSPNm.png)
-
-Click the green "+" sign and create a new Application configuration.
-
-![](http://i.imgur.com/OeejuvB.png)
-
-Specify the name of your "Main class" which should be your `App` class. You will also need to specify the module it resides in. Give the configuration a meaningful name such as "Launcher". After that click "OK".
-
-![](http://i.imgur.com/0QayTdJ.png)
-
-You can run your TornadoFX application by selecting *Run*→*Run 'Launcher'* or whatever you named the configuration.
-
-![](http://i.imgur.com/9HvQpTe.png)
-
-You should now see your application launch.
-
-![](http://i.imgur.com/agTMNS3.png)
-
-Congratulations! You have written your first (albeit simple) TornadoFX application. It may not look like much right now, but as we cover more of TornadoFX's powerful features we will be creating large, impressive user interfaces with little code in no time. But first let's understand a little better what is happening between `App` and `View`. 
-
-##Understanding Views
-
-Let's dive a little deeper into how a `View` works and how it can be used. Take a look at the `App` and `View` classes we just built. 
+Note you do not have to specify the generic type if you have an initial value to provide to the property. In the below example, it will infer the type as `String.
 
 ```kotlin
-class MyApp: App() {
-    override val primaryView = MyView::class
-}
-
-class MyView: View() {
-
-    override val root = VBox()
-
-    init {
-        with(root) {
-            this += Button("Press Me")
-            this += Label("Waiting")
-        }
-    }
+class Bar {
+    var foo by property("baz")
+    fun fooProperty() = getProperty(Bar::foo)
 }
 ```
 
-A `View` contains a hierarchy of JavaFX Nodes and is injected by name wherever it is called. In the next section we will learn how to leverage powerful builders to create these `Node` hierarchies quickly. But for now note the `MyApp` has the `MyView` injected to its `primaryView` property. There is only one instance of `MyView` maintained by TornadoFX, effectively making it a singleton.
+###FXML Delegate
 
-##Using inject() and Embedding Views
-You can also inject one or more Views into another `View`. Below we embed a `TopView` and `BottomView` into a `MasterView`. Note we use the `inject()` delegate property to lazily inject the `TopView` and `BottomView` instances. Then we call each "child" View's `root` to assign them to the `BorderPane`.
+If you have a given `MyView` View with a neighboring FXML file `MyView.fxml` defining the layout, the `fxid()` property delegate will retrieve the control defined in the FXML file. The control must have an `fx:id` that is the same name as the variable. 
+
+```xml
+<Label fx:id="counterLabel">
+```
+
+Now we can inject this `Label` into our `View` class:
 
 ```kotlin
-class MasterView: View() {
-
-    override val root = BorderPane()
-    
-    val topView: TopView by inject()
-    val bottomView: BottomView by inject()
-
-    init {
-        with(root) {
-            top = topView.root
-            bottom = bottomView
-        }
-    }
-}
-
-class TopView: View() {
-    override val root = Label("Top View")
-}
-
-class BottomView: View() {
-    override val root = Label("Bottom View")
-}
+val counterLabel : Label by fxid()
 ```
-
-**RENDERED UI:**
-
-![](http://i.imgur.com/3o7fFwe.png)
-
-If you need Views to communicate to each other, you can create a property in each of the "child" Views that holds the "parent" `View`.
+Otherwise, the ID must be specifically passed to the delegate call. 
 
 ```kotlin
-class MasterView : View() {
-
-    override val root = BorderPane()
-
-    val topView: TopView by inject()
-    val bottomView: BottomView by inject()
-
-    init {
-        with(root) {
-            top = topView.root
-            bottom = bottomView.root
-        }
-        
-        topView.parent = this
-        bottomView.parent = this
-    }
-}
-
-class TopView: View() {
-    override val root = Label("Top View")
-    lateinit var parent: MasterView
-}
-
-class BottomView: View() {
-    override val root = Label("Bottom View")
-    lateinit var parent: MasterView
-}
+val myLabel : Label by fxid("counterLabel")
 ```
 
-Typically you would use a `Controller` or some other model to communicate between views, and we will visit this topic throughout the book.
-
-###singleAssign() Property Delegate
-
-If you want to guarantee the `parent` properties are only assigned once, you can use the `singleAssign()` delegate instead of the `lateinit` keyword. This will cause a second assignment to throw an error, and it will also error when it is prematurely accessed before it is assigned.
-
-```kotlin
-class TopView: View() {
-    override val root = Label("Top View")
-    var parent: MasterView by singleAssign()
-}
-
-class BottomView: View() {
-    override val root = Label("Bottom View")
-    var parent: MasterView by singleAssign()
-}
-```
-You can look up more about `singleAssign()` in detail in Appendix A1, but know for now it guarantees a `var` can only be assigned once. It is also threadsafe and helps mitigate issues with mutability.
-
-##Injection Using find()
-The `inject()` delegate will lazily assign a given component to a property. The first time that component is called is when it will be retrieved. Alternatively, instead of using the `inject()` delegate you can use the `find()` function to retrieve a singleton instance of a `View` or other components.
-
-```kotlin
-class MasterView : View() {
-
-    override val root = BorderPane()
-
-    val topView = find(TopView::class)
-    val bottomView = find(BottomView::class)
-    
-    init {
-        with(root) {
-            top = topView.root
-            bottom = bottomView.root
-        }
-    }
-}
-
-class TopView: View() {
-    override val root = Label("Top View")
-}
-
-class BottomView: View() {
-    override val root = Label("Bottom View")
-}
-```
-You can use either `find()` or `inject()`, but using `inject()` delegates is the preferred means to perform dependency injection.
-
-##Controllers
-In many cases, it is considered a good practice to separate a UI into three distinct parts:
-
-1. **Model** - The business code layer that holds core logic and data
-2.  **View** - The visual display with various input and output controls
-3.  **Controller** - The "middleman" mediating events between the Model and the View
-
-> There are other flavors of MVC like MVVM and MVP, all of which can be leveraged in TornadoFX. 
-
-While you could put all logic from the Model and Controller right into the view, it is often cleaner to separate these three pieces distinctly to maximize reusability. One commonly used pattern to accomplish this is the MVC pattern. In TornadoFX, a `Controller` can be injected to support a `View`. 
-
-Here is a simple example. Create a simple `View` with a `TextField` whose value is written to a "database" when a `Button` is clicked.  We can inject a `Controller` that handles interacting with the model that writes to the database. Since this example is simplified, there will be no database but a printed message will serve as a placeholder. 
-
-```kotlin
-class MyView : View() {
-
-    override val root = VBox()
-    val controller: MyController by inject()
-
-    private val inputField = TextField()
-    private val inputButton = Button("Commit")
-
-    init {
-        with(root) {
-            this += Label("Input")
-            this += inputField
-            this += inputButton
-        }
-
-        inputButton.setOnAction {
-            controller.writeToDb(inputField.text)
-            inputField.clear()
-        }
-    }
-}
-
-
-class MyController: Controller() {
-    fun writeToDb(inputValue: String) {
-        println("Writing $inputValue to database!")
-    }
-}
-```
-
-**RENDERED UI:**
-
-![](http://i.imgur.com/CKG7Fb9.png)
-
-When the "Commit" button is clicked, you will see the Controller prints a line to the console. 
-
-```
-Writing Alpha to database!
-```
-
-You can also use Controllers to provide data to a `View`.
-
-```kotlin
-class MyView : View() {
-
-    override val root = VBox()
-    val controller: MyController by inject()
-
-    private val listView = ListView<String>()
-
-    init {
-        with(root) {
-            this += Label("My Items")
-            this += listView
-        }
-        listView.items = controller.values
-    }
-}
-
-
-class MyController: Controller() {
-    val values = FXCollections.observableArrayList("Alpha","Beta","Gamma","Delta")
-}
-```
-**RENDERED UI:**
-
-![](http://i.imgur.com/oKL9ZVD.png)
-
-Whether they are reading or writing data, Controllers can have long-running tasks and should not perform work on the JavaFX thread. See Section X to learn how to easily offload work to a worker thread. 
-
-##Fragment
-
-Any `View` you create is a singleton, which means you typically use it in only one place. However, if you would like to create a piece of UI that is short-lived or can be used in multiple places, consider using a `Fragment`. A **Fragment** is a special type of `View` that can have multiple instances that are typically short lived. They are particularly useful for popups as they have `openModal()` and `closeModal()` functions that can be called. 
-
-```kotlin
-
-class MyView : View() {
-
-    override val root = VBox()
-
-    private val button = Button("Press Me")
-
-    init {
-        with(root) {
-            this += button
-        }
-        button.setOnAction { 
-            MyFragment().openModal(stageStyle = StageStyle.UTILITY) 
-        }
-    }
-}
-
-
-class MyFragment: Fragment() {
-    override val root = VBox()
-
-    init {
-        with (root) {
-            this += Label("This is a popup")
-        }
-    }
-}
-```
-
-You can pass optional arguments to `openModal()` as well to modify a few of its behaviors. 
-
-**Optional Arguments for openModal()**
-
-|Argument|Type|Description|
-|---|---|---|
-|stageStyle|StageStyle|Defines one of the possible enum styles for `Stage`|
-|modality|Modality|Defines onf the possible enum modality types for `Stage`|
-|escapeClosedWindow|Boolean|Sets the `ESC` key to call `closeModal()`|
-
-
-##Summary
-
-TornadoFX is filled with simple, streamlined, and powerful injection tools to manage Views and Controllers. It also streamlines dialogs and other small UI pieces using `Fragment`. While the applications we built so far are pretty simple, hopefully you appreciate the simplified concepts TornadoFX introduces to JavaFX. In the next chapter we will cover what is arguably the most powerful feature of TornadoFX: Type-Safe Builders. 
-
-
-
+Please read Chapter 10 to learn more about FXML
