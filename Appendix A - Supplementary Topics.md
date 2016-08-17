@@ -12,41 +12,35 @@ It is often ideal to initialize properties immediately upon construction. But in
 val fooValue by lazy { buildExpensiveFoo() }
 ```
 
-But there are situations where the property needs to be assigned later not by a value-supplying lambda, but rather an arbitrary external call. When we leverage type-safe builders we may want to save a `Button` to a class-level property so we can reference it later. If we do not want `myButton` to be nullable, we need to use the [`lateinit` modifier](https://kotlinlang.org/docs/reference/properties.html#late-initialized-properties). 
+But there are situations where the property needs to be assigned later not by a value-supplying lambda, but rather some external entity at a later time. When we leverage type-safe builders we may want to save a `Button` to a class-level property so we can reference it later. If we do not want `myButton` to be nullable, we need to use the [`lateinit` modifier](https://kotlinlang.org/docs/reference/properties.html#late-initialized-properties). 
 
 ```kotlin
 class MyView: View() {
-        override val root = VBox()
 
-        lateinit var myButton: Button
+    lateinit var myButton: Button
 
-        init {
-            with(root) {
-                    myButton = button("New Entry")
-            }
-       }
+    override val root = vbox { 		
+		myButton = button("New Entry")
+    }
 }
 ```
 
-The problem with `lateinit` is it can be assigned multiple times by accident, and it is not necessary thread safe. This can lead to classic bugs associated with mutability, and you really should strive for immutability as much as possible ( *Effective Java* by Bloch, Item #13).
+The problem with `lateinit` is it can be assigned multiple times by accident, and it is not necessarily thread safe. This can lead to classic bugs associated with mutability, and you really should strive for immutability as much as possible ( *Effective Java* by Bloch, Item #13).
 
-By leveraging the `singleAssign()` delegate, you can guarantee that property is *only* assigned once. Any subsequent assignment attempts will throw a runtime error, and so will accessing it before a value is assigned. This effectively gives us the guarantee of immutability, even though it is enforced at runtime.
+By leveraging the `singleAssign()` delegate, you can guarantee that property is *only* assigned once. Any subsequent assignment attempts will throw a runtime error, and so will accessing it before a value is assigned. This effectively gives us the guarantee of immutability, although it is enforced at runtime rather than compile time.
 
 ```kotlin
 class MyView: View() {
-        override val root = VBox()
 
-        var myButton: Button by singleAssign()
+    var myButton: Button by singleAssign()
 
-        init {
-            with(root) {
-                    myButton = button("New Entry") //property locked
-            }
-       }
+    override val root = vbox { 		
+		myButton = button("New Entry")
+    }
 }
 ```
 
-Even though this single assignment is not enforced at compile time, infractions are often captured early in the development process. Especially as complex builder designs evolve and variable assignments move around, `singleAssign()` is an effective tool to mitigate mutability problems and allow flexible timing for property assignments.
+Even though this single assignment is not enforced at compile time, infractions can be captured early in the development process. Especially as complex builder designs evolve and variable assignments move around, `singleAssign()` is an effective tool to mitigate mutability problems and allow flexible timing for property assignments.
 
 By default, `singleAssign()` synchronizes access to its internal value. You should leave it this way especially if your application is multithreaded. If you wish to disable synchronization for whatever reason, you can pass a `SingleAssignThreadSafetyMode.NONE` value for the policy. 
 
@@ -56,7 +50,7 @@ var myButton: Button by singleAssign(SingleAssignThreadSafetyMode.NONE)
 
 ###JavaFX Property Delegate
 
-Do not confuse the JavaFX `Property` with the standard Java/Kotlin "property". The `Property` is a special type in `JavaFX` that maintains a value internally and notifies listeners of its changes. It is proprietary to JavaFX because it supports binding operations, and will notify the UI when it changes. The `Property` is a core feature of JavaFX and has its own JavaBeans-like pattern.
+Do not confuse the JavaFX `Property` with a standard Java/Kotlin "property". The `Property` is a special type in `JavaFX` that maintains a value internally and notifies listeners of its changes. It is proprietary to JavaFX because it supports binding operations, and will notify the UI when it changes. The `Property` is a core feature of JavaFX and has its own JavaBeans-like pattern.
 
 This pattern is pretty verbose however, and even with Kotlin's syntax efficiencies it still is pretty verbose. You have to declare the traditional getter/setter as well as the `Property` item itself.
 
@@ -79,7 +73,7 @@ class Bar {
 }
 ```
 
-Especially as you start working with `TableView` and other complex controls, you will likely find this pattern helpful when creating model classes. You will see this pattern used throughout this book.
+Especially as you start working with `TableView` and other complex controls, you will likely find this pattern helpful when creating model classes, and this pattern is used in several places throughout this book.
 
 Note you do not have to specify the generic type if you have an initial value to provide to the property. In the below example, it will infer the type as `String.
 
@@ -109,4 +103,6 @@ Otherwise, the ID must be specifically passed to the delegate call.
 val myLabel : Label by fxid("counterLabel")
 ```
 
-Please read Chapter 10 to learn more about FXML
+Please read Chapter 10 to learn more about FXML.
+
+
