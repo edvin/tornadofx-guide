@@ -11,9 +11,9 @@
 * [8. Builders Part V - Charts](8. Builders V - Charts.md)
 * [9. Builders Part VI - Shapes and Animation](9. Builders VI - Shapes and Animation.md)
 * [10. FXML](10. FXML.md)
-* [11. ViewModel and Validation](11. ViewModel and Validation)
-* [12. OSGi](12. OSGi)
-* [13. TornadoFX IDEA Plugin](13. TornadoFX IDEA Plugin)
+* [11. ViewModel and Validation](11. ViewModel and Validation.md)
+* [12. OSGi](12. OSGi.md)
+* [13. TornadoFX IDEA Plugin](13. TornadoFX IDEA Plugin.md)
 * [1. View Model](11. ViewModel and Validation.md)
 * [Appendix A](Appendix A.md)
 
