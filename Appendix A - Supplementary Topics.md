@@ -84,6 +84,22 @@ class Bar {
 }
 ```
 
+#### Alternative Property Syntax
+
+There is also an alternative syntax which produces almost the same result:
+
+```kotlin
+import tornadofx.getValue
+import tornadofx.setValue
+
+class Bar {
+    val fooProperty = SimpleStringProperty()
+    var foo by fooProperty
+}
+```
+
+Here you define the JavaFX property manually and delegate the getters and setters directly from the property. This might look cleaner to you, and so you are free to choose whatever syntax you are most comfortable with. However, the first alternative creates a JavaFX compliant property in that it exposes the `Property` via a function called `fooProperty()`, while the latter simply exposes a variable called `fooProperty`. For TornadoFX there is no difference, but if you interact with legacy libraries that require a property function you might need to stick with the first one.
+
 ###FXML Delegate
 
 If you have a given `MyView` View with a neighboring FXML file `MyView.fxml` defining the layout, the `fxid()` property delegate will retrieve the control defined in the FXML file. The control must have an `fx:id` that is the same name as the variable. 
