@@ -54,7 +54,7 @@ In the following example we toggle fullscreen mode in a modal window via a butto
 ```kotlin
 button("Toggle fullscreen") {
     setOnAction {
-        modalStage.isFullScreen = !modalStage.isFullScreen
+        with (modalStage) { isFullScreen = !isFullScreen }
     }
 }
 ```
