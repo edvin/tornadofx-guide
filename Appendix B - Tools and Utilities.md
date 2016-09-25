@@ -66,7 +66,8 @@ button("Toggle fullscreen") {
 - [Error Handler](https://github.com/edvin/tornadofx/wiki/Error-Handler#error-handler)
 
 ##11. Data Tools
-- [REST Client](https://github.com/edvin/tornadofx/wiki/JsonModel)
+- [JsonModal](https://github.com/edvin/tornadofx/wiki/JsonModel)
+- [REST Client](https://github.com/edvin/tornadofx/wiki/REST-Client)
 - [SortedFilteredList](https://github.com/edvin/tornadofx/wiki/Utilities#sortedfilteredlist)
 - Clipboard
 - [Resources](https://github.com/edvin/tornadofx/wiki/Resources)
