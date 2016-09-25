@@ -36,6 +36,28 @@ There are a lot of utilities and miscellaneous "odds and ends" in TornadoFX. Som
 
 This is a bit challenging to organize because some of these utilities are helpful but often hard to categorize. We can always throw items into the Appendix if they do not fit anywhere.
 
+### Entering fullscreen
+
+To enter fullscreen you need to get a hold of the current `stage` and call `stage.isFullScreen = true`. The primary stage is the active stage unless you opened a modal window via `view.openModal()` or manually created a stage. The primary stage is available in the variable `FX.primaryStage`. To open the application in fullscreen on startup you should override `start` in your app class:
+
+```kotlin
+class MyApp : App(MyView::class) {
+    override fun start(stage: Stage) {
+        super.start(stage)
+        stage.isFullScreen = true
+    }
+}
+```
+
+In the following example we toggle fullscreen mode in a modal window via a button:
+ 
+```kotlin
+button("Toggle fullscreen") {
+    setOnAction {
+        modalStage.isFullScreen = !modalStage.isFullScreen
+    }
+}
+```
 
 ##10. Concurrency and Error Handling
 - [Async Task Execution](https://github.com/edvin/tornadofx/wiki/Async-Task-Execution#async-task-execution)
