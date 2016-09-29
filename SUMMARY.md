@@ -6,7 +6,7 @@
 * [3. Components](3. Components.md)
 * [4. Builders Part I - Basic Controls](4. Builders I - Basic Controls.md)
 * [5. Builders Part II - Data Controls](5. Builders II - Data Controls.md)
-* [6. Builders Part III - Type Safe CSS](6. Builders III - CSS.md)
+* [6. Builders Part III - Type Safe CSS](6. Builders II - CSS.md)
 * [7. Builders Part IV - Layouts and Menus](7. Builders IV - Layouts and Menus.md)
 * [8. Builders Part V - Charts](8. Builders V - Charts.md)
 * [9. Builders Part VI - Shapes and Animation](9. Builders VI - Shapes and Animation.md)
