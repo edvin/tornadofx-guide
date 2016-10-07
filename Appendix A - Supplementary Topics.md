@@ -1,10 +1,10 @@
 #Appendix A - Reference
 
-##1 - Property Delegates
+##A1 - Property Delegates
 
-Kotlin is packed with great language features, and [delegated properties](https://kotlinlang.org/docs/reference/delegated-properties.html) are a powerful way to specify how a property works and create re-usable policies for those properties. On top of the ones that exist in Kotlin's standard library, TornadoFX provides a few more property delegates that are particularly helpful for JavaFX development. 
+Kotlin is packed with great language features, and [delegated properties](https://kotlinlang.org/docs/reference/delegated-properties.html) are a powerful way to specify how a property works and create re-usable policies for those properties. On top of the ones that exist in Kotlin's standard library, TornadoFX provides a few more property delegates that are particularly helpful for JavaFX development.
 
-###Single Assign 
+### Single Assign
 
 It is often ideal to initialize properties immediately upon construction. But inevitably there are times when this simply is not feasible. When a property needs to delay its initialization until it is first called, a lazy delegate is typically used. You specify a lambda instructing how the property value is initialized when its getter is called the first time.
 
@@ -12,14 +12,14 @@ It is often ideal to initialize properties immediately upon construction. But in
 val fooValue by lazy { buildExpensiveFoo() }
 ```
 
-But there are situations where the property needs to be assigned later not by a value-supplying lambda, but rather some external entity at a later time. When we leverage type-safe builders we may want to save a `Button` to a class-level property so we can reference it later. If we do not want `myButton` to be nullable, we need to use the [`lateinit` modifier](https://kotlinlang.org/docs/reference/properties.html#late-initialized-properties). 
+But there are situations where the property needs to be assigned later not by a value-supplying lambda, but rather some external entity at a later time. When we leverage type-safe builders we may want to save a `Button` to a class-level property so we can reference it later. If we do not want `myButton` to be nullable, we need to use the [`lateinit` modifier](https://kotlinlang.org/docs/reference/properties.html#late-initialized-properties).
 
 ```kotlin
 class MyView: View() {
 
     lateinit var myButton: Button
 
-    override val root = vbox { 		
+    override val root = vbox {
 		myButton = button("New Entry")
     }
 }
@@ -34,7 +34,7 @@ class MyView: View() {
 
     var myButton: Button by singleAssign()
 
-    override val root = vbox { 		
+    override val root = vbox {
 		myButton = button("New Entry")
     }
 }
@@ -42,20 +42,20 @@ class MyView: View() {
 
 Even though this single assignment is not enforced at compile time, infractions can be captured early in the development process. Especially as complex builder designs evolve and variable assignments move around, `singleAssign()` is an effective tool to mitigate mutability problems and allow flexible timing for property assignments.
 
-By default, `singleAssign()` synchronizes access to its internal value. You should leave it this way especially if your application is multithreaded. If you wish to disable synchronization for whatever reason, you can pass a `SingleAssignThreadSafetyMode.NONE` value for the policy. 
+By default, `singleAssign()` synchronizes access to its internal value. You should leave it this way especially if your application is multithreaded. If you wish to disable synchronization for whatever reason, you can pass a `SingleAssignThreadSafetyMode.NONE` value for the policy.
 
 ```kotlin
 var myButton: Button by singleAssign(SingleAssignThreadSafetyMode.NONE)
 ```
 
-###JavaFX Property Delegate
+### JavaFX Property Delegate
 
 Do not confuse the JavaFX `Property` with a standard Java/Kotlin "property". The `Property` is a special type in `JavaFX` that maintains a value internally and notifies listeners of its changes. It is proprietary to JavaFX because it supports binding operations, and will notify the UI when it changes. The `Property` is a core feature of JavaFX and has its own JavaBeans-like pattern.
 
 This pattern is pretty verbose however, and even with Kotlin's syntax efficiencies it still is pretty verbose. You have to declare the traditional getter/setter as well as the `Property` item itself.
 
 ```kotlin
- class Bar { 
+ class Bar {
     private val fooProperty by lazy { SimpleObjectProperty<T>() }
     fun fooProperty() = fooProperty
     var foo: T
@@ -100,9 +100,9 @@ class Bar {
 
 Here you define the JavaFX property manually and delegate the getters and setters directly from the property. This might look cleaner to you, and so you are free to choose whatever syntax you are most comfortable with. However, the first alternative creates a JavaFX compliant property in that it exposes the `Property` via a function called `fooProperty()`, while the latter simply exposes a variable called `fooProperty`. For TornadoFX there is no difference, but if you interact with legacy libraries that require a property function you might need to stick with the first one.
 
-###FXML Delegate
+### FXML Delegate
 
-If you have a given `MyView` View with a neighboring FXML file `MyView.fxml` defining the layout, the `fxid()` property delegate will retrieve the control defined in the FXML file. The control must have an `fx:id` that is the same name as the variable. 
+If you have a given `MyView` View with a neighboring FXML file `MyView.fxml` defining the layout, the `fxid()` property delegate will retrieve the control defined in the FXML file. The control must have an `fx:id` that is the same name as the variable.
 
 ```xml
 <Label fx:id="counterLabel">
@@ -113,12 +113,11 @@ Now we can inject this `Label` into our `View` class:
 ```kotlin
 val counterLabel : Label by fxid()
 ```
-Otherwise, the ID must be specifically passed to the delegate call. 
+
+Otherwise, the ID must be specifically passed to the delegate call.
 
 ```kotlin
 val myLabel : Label by fxid("counterLabel")
 ```
 
 Please read Chapter 10 to learn more about FXML.
-
-
