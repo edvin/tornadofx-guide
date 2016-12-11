@@ -15,5 +15,6 @@ Summary
 -	[11. ViewModel and Validation](11. ViewModel and Validation.md)
 -	[12. OSGi](12. OSGi.md)
 -	[13. TornadoFX IDEA Plugin](13. TornadoFX IDEA Plugin.md)
+-	[14. Scopes](14. Scopes.md)
 -	[Appendix A - Supplementary Topics](Appendix A - Supplementary Topics.md)
 -	[Appendix B - Supplementary Topics](Appendix B - Tools and Utilities.md)
