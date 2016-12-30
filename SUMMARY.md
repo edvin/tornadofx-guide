@@ -18,4 +18,4 @@ Summary
 -	[14. Scopes](14. Scopes.md)
 -	[15. EventBus](15. EventBus.md)
 -	[Appendix A - Supplementary Topics](Appendix A - Supplementary Topics.md)
--	[Appendix B - Supplementary Topics](Appendix B - Tools and Utilities.md)
+-	[Appendix B - Tools and Utilities](Appendix B - Tools and Utilities.md)
