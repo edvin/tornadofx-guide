@@ -96,3 +96,13 @@ button("Toggle fullscreen") {
 - [Third Party Injection](https://github.com/edvin/tornadofx/wiki/Dependency-Injection#third-party-injection-frameworks)
 - [Logging](https://github.com/edvin/tornadofx/wiki/Logging)
 - List of Extension Functions 
+
+# Logging
+
+`Component` has a lazy initialized instance of `java.util.Logger` named `log`. Usage:
+
+```kotlin
+log.info { "Log message here" }
+```
+
+TornadoFX makes no changes to the logging capabilities of `java.util.Logger`. See the [javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html) for more information.
