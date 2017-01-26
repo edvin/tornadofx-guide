@@ -18,5 +18,6 @@ Summary
 -	[14. Scopes](14. Scopes.md)
 -	[15. EventBus](15. EventBus.md)
 -	[16. Workspaces](16. Workspaces.md)
+-	[17. Internationalization](17. Internationalization.md)
 -	[Appendix A - Supplementary Topics](Appendix A - Supplementary Topics.md)
 -	[Appendix B - Tools and Utilities](Appendix B - Tools and Utilities.md)
