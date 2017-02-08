@@ -12,7 +12,7 @@ Summary
 -	[8. Charts](8. Charts.md)
 -	[9. Shapes and Animation](9. Shapes and Animation.md)
 -	[10. FXML](10. FXML.md)
--	[11. ViewModel and Validation](11. ViewModel and Validation.md)
+-	[11. Editing Models and Validation](11. Editing Models and Validation.md)
 -	[12. OSGi](12. OSGi.md)
 -	[13. TornadoFX IDEA Plugin](13. TornadoFX IDEA Plugin.md)
 -	[14. Scopes](14. Scopes.md)
