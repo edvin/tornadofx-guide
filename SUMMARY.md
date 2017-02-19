@@ -19,6 +19,6 @@ Summary
 -	[15. EventBus](15. EventBus.md)
 -	[16. Workspaces](16. Workspaces.md)
 -	[17. Internationalization](17. Internationalization.md)
--   [18. Config Settings and State](18. Config settings and state.md)
+-   [18. Config Settings and State](18. Config Settings and State.md)
 -	[Appendix A - Supplementary Topics](Appendix A - Supplementary Topics.md)
 -	[Appendix B - Tools and Utilities](Appendix B - Tools and Utilities.md)
