@@ -21,5 +21,6 @@ Summary
 -	[17. Internationalization](17. Internationalization.md)
 -   [18. Config Settings and State](18. Config Settings and State.md)
 -   [19. JSON and REST](19. JSON and REST.md)
+-   [20. Dependency Injection](20. Dependency Injection.md)
 -	[Appendix A - Supplementary Topics](Appendix A - Supplementary Topics.md)
 -	[Appendix B - Tools and Utilities](Appendix B - Tools and Utilities.md)
