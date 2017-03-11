@@ -69,6 +69,7 @@ button("Toggle fullscreen") {
 - [JsonModal](https://github.com/edvin/tornadofx/wiki/JsonModel)
 - [REST Client](https://github.com/edvin/tornadofx/wiki/REST-Client)
 - [SortedFilteredList](https://github.com/edvin/tornadofx/wiki/Utilities#sortedfilteredlist)
+    - Mention SortedFilteredList.refilter() which causes the existing predicate to be reevaluated
 - Clipboard
 - [Resources](https://github.com/edvin/tornadofx/wiki/Resources)
 
