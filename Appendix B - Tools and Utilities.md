@@ -107,3 +107,95 @@ log.info { "Log message here" }
 ```
 
 TornadoFX makes no changes to the logging capabilities of `java.util.Logger`. See the [javadoc](https://docs.oracle.com/javase/8/docs/api/java/util/logging/Logger.html) for more information.
+
+# Build tools
+
+## Maven
+The Tornadofx plugin for Intellij can crete 3 types of maven projects.
+1. A standard maven project
+2. An OSGI enabled maven project
+3. An OSGI enabled maven project where the views are exposed declarativly.
+
+All three projects create a working and compilable project that can serve as a starting point. If you do not want to use 
+the plugin to create the project that the pom.xml needs to have at a minimum:
+
+```xml
+<properties>
+   <kotlin.version>1.1.1</kotlin.version>
+   <tornadofx.version>1.7.0</tornadofx.version>
+</properties>
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-plugin</artifactId>
+            <version>${kotlin.version}</version>
+            <configuration>
+                <jvmTarget>1.8</jvmTarget>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>compile</id>
+                    <phase>process-sources</phase>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>test-compile</id>
+                    <phase>test-compile</phase>
+                    <goals>
+                        <goal>test-compile</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+                <execution>
+                    <id>compile</id>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>compile</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>testCompile</id>
+                    <phase>test-compile</phase>
+                    <goals>
+                        <goal>testCompile</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+   ....
+</plugins>
+</build>
+<dependencies>
+    <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-stdlib</artifactId>
+        <version>${kotlin.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>no.tornado</groupId>
+        <artifactId>tornadofx</artifactId>
+        <version>${tornadofx.version}</version>
+    </dependency>
+    <dependency>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <artifactId>kotlin-test</artifactId>
+        <version>${kotlin.version}</version>
+        <scope>test</scope>
+    </dependency>
+</dependencies>
+```
+
+---
+**Note**
+
+Starting with TornadoFX version 1.7.1 you **must** configure the kotlin compiler plugin to target `jvmTarget 1.8` as in the example above.
+
+---
