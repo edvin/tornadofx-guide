@@ -252,3 +252,131 @@ column("Bed", Room::bed).fixedWidth(200.0)
 When you hard-code the width of the columns you will most likely end up with some extra space. This space will be awarded to the right most resizable column, unless you specify `remainingWidth()` for one or more column. In that case, these columns will divide the extra space between them.
 
 In the case where not all columns can be afforded their preferred width, all resizable columns must give away some of their space, but the `SmartResize` Policy makes sure that the column with the biggest reduction potential will give away its space first. The reduction potential is the difference between the current width of the column and its defined minimum width.
+
+
+
+A3 - Custom Cell Formatting in ListView
+---------------------------------------
+
+Even though the default look of a `ListView` is rather boring (because it calls `toString()` and renders it as text) you can modify it so that every cell is a custom `Node` of your choosing. By calling `cellCache()`, TornadoFX provides a convenient way to override what kind of `Node` is returned for each item in your list (Figure 5.2).
+
+```kotlin
+class MyView: View() {
+
+    val persons = listOf(
+            Person("John Marlow", LocalDate.of(1982,11,2)),
+            Person("Samantha James", LocalDate.of(1973,2,4))
+    ).observable()
+
+    override val root = listview(persons) {
+        cellFormat {
+            graphic = cache {
+                form {
+                    fieldset {
+                        field("Name") {
+                            label(it.name)
+                        }
+                        field("Birthday") {
+                            label(it.birthday.toString())
+                        }
+                        label("${it.age} years old") {
+                            alignment = Pos.CENTER_RIGHT
+                            style {
+                                fontSize = 22.px
+                                fontWeight = FontWeight.BOLD
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+class Person(val name: String, val birthday: LocalDate) {
+    val age: Int get() = Period.between(birthday, LocalDate.now()).years
+}
+```
+
+**Figure 5.2** - A custom cell rendering for `ListView` ![](http://i.imgur.com/o3r2TuR.png)
+
+The `cellFormat` function lets you configure the `text` and/or `graphic` property of the cell whenever it comes into view on the screen. The cells themselves are reused, but whenever the `ListView` asks the cell to update its content, the `cellFormat` function is called. In our example we only assign to `graphic`, but if you just want to change the string representation you should assign it to `text`. It is completely legitimate to assign it to both `text` and `graphic`. The values will automatically be cleared by the `cellFormat` function when a certain list cell is not showing an active item.
+
+Note that assigning new nodes to the `graphic` property every time the list cell is asked to update can be expensive. It might
+be fine for many use cases, but for heavy node graphs, or node graphs where you utilize binding towards the UI components inside the cell, you should cache the resulting node so the Node graph will only be created once per node. This is done using the `cache` wrapper in the above example.
+
+#### Assign If Null
+
+If you have a reason for wanting to recreate the graphic property for a list cell, you can use the `assignIfNull` helper,
+which will assign a value to any given property if the property doesn't already contain a value. This will make sure that
+you avoid creating new nodes if `updateItem` is called on a cell that already has a graphic property assigned.
+
+```kotlin
+cellFormat {
+    graphicProperty().assignIfNull {
+        label("Hello")
+    }
+}
+```
+
+### ListCellFragment
+
+The `ListCellFragment` is a special fragment which can help you manage `ListView` cells. It extends `Fragment`, and
+includes some extra `ListView` specific fields and helpers. You never instantiate these fragments manually, instead you
+instruct the `ListView` to create them as needed. There is a one-to-one correlation between `ListCell` and `ListCellFragment` instances. Only one `ListCellFragment` instance will over its lifecycle be used to represent different items.
+
+To understand how this works, let's consider a manually implemented `ListCell`, essentially the way you would do in vanilla JavaFX. The `updateItem` function will be called when the `ListCell` should represent a new item, no item, or just an update to the same item. When you use a `ListCellFragment`, you do not need to implement something akin to `updateItem`, but the `itemProperty` inside it will update to represent the new item automatically. You can listen to changes to the `itemProperty`, or better yet, bind it directly to a `ViewModel`. That way your UI can bind directly to the `ViewModel` and no longer need to care about changes to the underlying item.
+
+Let's recreate the form from the `cellFormat` example using a `ListCellFragment`. We need a `ViewModel` which we will
+call `PersonModel` (Please see the `Editing Models and Validation` chapter for a full explanation of the `ViewModel`) For now,
+just imagine that the `ViewModel` acts as a proxy for an underlying `Person`, and that the `Person` can be changed while the
+observable values in the `ViewModel` remain the same. When we have created our `PersonCellFragment`, we need to configure
+the `ListView` to use it:
+
+```kotlin
+listview(personlist) {
+    cellFragment(PersonCellFragment::class)
+}
+```
+
+Now comes the `ListCellFragment` itself.
+
+```kotlin
+class PersonListFragment : ListCellFragment<Person>() {
+    val person = PersonModel().bindTo(this)
+
+    override val root = form {
+        fieldset {
+            field("Name") {
+                label(person.name)
+            }
+            field("Birthday") {
+                label(person.birthday)
+            }
+            label(stringBinding(person.age) { "$value years old" }) {
+                alignment = Pos.CENTER_RIGHT
+                style {
+                    fontSize = 22.px
+                    fontWeight = FontWeight.BOLD
+                }
+            }
+        }
+    }
+}
+```
+
+Because this Fragment will be reused to represent different list items, the easiest approach is to bind the ui elements to the ViewModel's properties.
+
+The `name` and `birthday` properties are bound directly to the labels inside the fields. The age string in the last label needs to be constructed using a `stringBinding`to make sure it updates when the item changes.
+
+While this might seem like slightly more work than the `cellFormat` example, this approach makes it possible to leverage
+everything the Fragment class has to offer. It also forces you to define the cell node graph outside of the builder hierarchy,
+ which improves refactoring possibilities and enables code reuse.
+
+#### Additional helpers and editing support
+
+The `ListCellFragment` also have some other helper properties. They include the `cellProperty` which will
+update whenever the underlying cell changes and the `editingProperty`, which will tell you if this the underlying list cell
+is in editing mode. There are also editing helper functions called `startEdit`, `commitEdit`, `cancelEdit` plus an `onEdit`
+callback. The `ListCellFragment` makes it trivial to utilize the existing editing capabilites of the `ListView`. A complete example
+can be seen in the [TodoMVC](https://github.com/edvin/todomvc) demo application.
