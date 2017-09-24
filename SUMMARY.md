@@ -28,5 +28,3 @@ Summary
   * [JSON and REST](part2/JSON and REST.md)
   * [Dependency Injection](part2/Dependency Injection.md)
   * [Wizard](part2/Wizard.md)
-*	[Appendix A * Supplementary Topics](Appendix A - Supplementary Topics.md)
-*	[Appendix B * Tools and Utilities](Appendix B - Tools and Utilities.md)
