@@ -1,21 +1,20 @@
 # Workspaces
 
 Java Business applications have traditionally been based on one of the Rich Client Frameworks,
-namely NetBeans Platform or Eclipse RCP. An important reason for choosing an RCP platform has been the
-workspace like functionality they provide. Some important features of a workspace are:
+namely the NetBeans Platform or Eclipse RCP. An important reason for choosing an RCP platform has been the workspace-like functionality they provide. Some important features of a workspace are:
 
-* Common action buttons that tie to the state of the docked view (Save, Refresh etc)
-* Context based UI nodes added to the common workspace interface
+* Common action buttons that tie to the state of the docked view (Save, Refresh, etc)
+* Context-based UI nodes added to the common workspace interface
 * Navigation stack for traversing visited views, controlled through back and forward buttons like a web browser
 * Menu system with dynamic contributions and modifications
 
-TornadoFX has begun to bridge the gap between the RCP platforms by providing Workspaces. While still in it's infancy,
+TornadoFX has begun to bridge the gap between the RCP platforms by providing Workspaces. While still in its infancy,
 the default functionality is a solid foundation for business applications in need of the features discussed above.
 
-## The simplest possible Workspace app
+## A Simple Workspace Example
 
 To kick off a Workspace app, all you need to do is to subclass `App` and set the primary `View` to `Workspace::class`.
-The result can be seen below (Figure 16.1).
+The result can be seen below (Figure 16.1):
 
 ```kotlin
 class MyApp : App(Workspace::class)
@@ -27,11 +26,10 @@ class MyApp : App(Workspace::class)
 
 The resulting Workspace consists of a button bar with four default buttons and an empty content area below it.
 The content area can house any `UIComponent`. You add a component to the `content` area by calling `workspace.dock()` on it. If you
-show the Workspace without a docked View, it will by default only take up the space needed for the buttons. The window in Figure 16.1
+show the `Workspace` without a docked `View`, it will by default only take up the space needed for the buttons. The window in Figure 16.1
 was resized after it was opened.
 
-Let's pretend we have a `CustomerList` component that we would like to dock in the Workspace as the application starts.
-We do this by overriding the `onBeforeShow` callback:
+Let's pretend we have a `CustomerList` component that we would like to dock in the `Workspace` as the application starts. We do this by overriding the `onBeforeShow` callback:
 
 ```kotlin
 class MyApp : App(Workspace::class) {
@@ -45,26 +43,32 @@ class MyApp : App(Workspace::class) {
 
 ![](http://i.imgur.com/E79aeDl.png)
 
-The complete code of the Customer List is not important for us, suffice it to say that it displays a TableView and
-lists some Customers. What is interesting however, is that the **Refresh** button in the Workspace was enabled
-when the `CustomerList` was docked, while the **Save** button remained disabled.
+To keep things focused, we will leave out the `CustomerList` implementation code which simply displays a `TableView` with some Customers. What is interesting however, is that the **Refresh** button in the `Workspace` was enabled when the `CustomerList` was docked, while the **Save** button remained disabled.
 
 ### Leveraging the Workspace buttons
 
-Whenever a `UIComponent` is docked in the Workspace, the **Refresh**, **Save** and **Delete** buttons will be enabled by default. This happensbecause the Workspace looks at the `refreshable`, `savable` and `deletable` properties in the docked component. Every `UIComponent`returns a boolean property with the default value of `true`, which the Workspace then connects to the enabled state of these buttons. In the `CustomerList` example, we made sure the **Save** button was always disabled by overriding this property:
+Whenever a `UIComponent` is docked in the `Workspace`, the **Refresh**, **Save**, and **Delete** buttons will be enabled by default. This happens because the `Workspace` looks at the `refreshable`, `savable` and `deletable` properties in the docked component. Every `UIComponent` returns a boolean property with the default value of `true`, which the `Workspace` then connects to the enabled state of these buttons. In the `CustomerList` example, the TornadoFX maintainers made sure the **Save** button was always disabled by overriding this property:
 
 ```
 override val savable = SimpleBooleanProperty(false)
 ```
 
-We can achieve the same result by calling `disableSave()` in the `init` block, same goes for `disableRefresh()` and `disableDelete()`.
+We can achieve the same result by calling `disableSave()` in the `init` block, and the same goes for `disableRefresh()` and `disableDelete()`.
 
-We didn't touch the other buttons, so they remain `true` as per the default. Whenever the `Refresh` button
-is called, it will fire the `onRefresh` function in the `View`. You can override this to provide your refresh action:
+We did not touch the other buttons, so they remain `true` as per the default. Whenever the `Refresh` button is called, it will fire the `onRefresh` function in the `View`. You can override this to provide your refresh action:
+
 
 ```
-override val onRefresh() {
-    customerTable.asyncItems { customerController.listCustomers() }
+class MyApp: App(MyWorkspace::class) {
+    override fun onBeforeShow(view: UIComponent) {
+        workspace.dock<MyView>()
+    }
+}
+
+class MyWorkspace: Workspace() {
+    override fun onRefresh() {
+      customerTable.asyncItems { customerController.listCustomers() }
+    }
 }
 ```
 
@@ -72,7 +76,7 @@ Same goes for the **Delete** button. We will revisit the **Save** button and int
 
 ### Tabbed Views
 
-You may at one point dock a View containing a TabPane inside of a Workspace, and then add tabs which represents further UIComponents. You can quite easily proxy the savable, refreshable and deletable state and actions from the Workspace onto the View represented by the currently active Tab. Consider a Customer Editor which has tabs for editing customer data, and one for editing contacts for that customer. Whenever the user selects one of the tabs, the buttons in the Workspace should interact with the state and actions from the selected tab view.
+You may at one point dock a View containing a `TabPane` inside of a `Workspace`, and then add tabs which represents further UIComponents. You can quite easily proxy the savable, refreshable and deletable state and actions from the `Workspace` onto the `View` represented by the currently active Tab. Consider a Customer Editor which has tabs for editing customer data, and one for editing contacts for that customer. Whenever the user selects one of the tabs, the buttons in the Workspace should interact with the state and actions from the selected tab view.
 
 ```kotlin
 class CustomerEditor : View("Customer Editor") {
@@ -101,10 +105,9 @@ fun TabPane.connectWorkspaceActions() {
 }
 ```
 
-This function is declared inside `UIComponent`, so the `savableWhen`, `deletableWhen` and `refreshableWhen` are performed on the UIComponent. Those state are then bound to the `savable`, `deletable` and `refreshable` state of the TabPane. But wait - a TabPane doesn't have those functions?! Yes, in TornadoFX it has :) You can probably guess that the implementation is again another proxy into the currently selected Tab in the TabPane, and a lookup the UIComponent represented by the `content` property of that Tab. Whenever the Tab changes (or when the content of the tab changes), the underlying UIComponent is looked up, and the pertinent states are bound to the Workspace.
+This function is declared inside `UIComponent`, so the `savableWhen`, `deletableWhen`, and `refreshableWhen` are performed on the UIComponent. Those state are then bound to the `savable`, `deletable` and `refreshable` state of the `TabPane`. But wait... a `TabPane` does not have those functions?! Yes, in TornadoFX it does :) You can probably guess that the implementation is again another proxy into the currently selected `Tab` in the `TabPane`, and a lookup of the UIComponent represented by the `content` property of that `Tab`. Whenever the `Tab` changes (or when the content of the tab changes), the underlying UIComponent is looked up, and the pertinent states are bound to the `Workspace`.
 
-It would also be possible to bind these states and connect the actions more explicitly. You will never or seldom need to do that, but the following
-example might help your understanding of the proxy mechanism.
+It would also be possible to bind these states and connect the actions more explicitly. You will never or seldom need to do that, but the following example might help your understanding of the proxy mechanism.
 
 ```kotlin
 class TooExplicitCustomerEditor : View() {
