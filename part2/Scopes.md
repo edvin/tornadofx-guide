@@ -1,4 +1,4 @@
-# 14. Scopes
+# Scopes
 
 Scope is a simple construct that enables some interesting and helpful behavior in a TornadoFX application.
 

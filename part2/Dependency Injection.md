@@ -1,7 +1,5 @@
 # Dependency Injection
 
-**TODO**: This page is snipped from the Wiki and needs a rewrite
-
 `View` and `Controller` are singletons, so you need some way to access the instance of a specific component. Tornado FX supports dependency injection, but you can also lookup components with the `find` function.
 
 ```kotlin
