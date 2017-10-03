@@ -54,11 +54,11 @@ calls out to the service and returns true or false.
 
 If the result is true, we update the username and password in the config object and calls save on it. Finally, we call `showMainScreen` which could hide the login screen and show the main screen of the application.
 
-_Please not that the example is not a best practise for storing sensitive data, it merely illustrates how you can use the config object._
+_Please not that the example is not a best practice for storing sensitive data, it merely illustrates how you can use the config object._
 
 ## Data types and default values
 
-`config` also supports other data types. It is a nice practise to wrap multiple operations on the config object in a `with` block.
+`config` also supports other data types. It is a nice practice to wrap multiple operations on the config object in a `with` block.
 
 ```kotlin
 // Assign to x, default to 50.0
