@@ -137,3 +137,17 @@ val Component.webAPI: WebAPI get() = (scope as JProScope).webAPI
 ```
 
 The `scope` property of any `Component` will be the `JProScope` so we can cast it and access the `webAPI` property we defined in our custom scope class.
+
+## Testing with Scopes
+
+Since Scopes allow you to create separate instances of components that are usually singletons, you can leverage Scopes to test Views and even whole App instances.
+
+For example, to generate a new Scope and lookup a View in that scope, you can use the following code:
+
+```kotlin
+val testScope = Scope()
+val myView = find<MyView>(testScope)
+```
+
+
+
