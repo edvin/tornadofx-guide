@@ -13,14 +13,14 @@ Later in this chapter we will introduce the REST client, but the JSON Support ca
 
 ```kotlin
 class Person : JsonModel {
-    var id by property<Int>()
-    fun idProperty() = getProperty(Person::id)
+    val idProperty = SimpleIntegerProperty()
+    var id by idProperty
 
-    var firstName by property<String>()
-    fun firstNameProperty() = getProperty(Person::firstName)
+    val firstNameProperty = SimpleStringProperty()
+    var firstName by firstNameProperty
 
-    var lastName by property<String>()
-    fun lastNameProperty() = getProperty(Person::lastName)
+    val lastNameProperty = SimpleStringProperty()
+    var lastName by lastNameProperty
 
     val phones = FXCollections.observableArrayList<Phone>()
 
@@ -44,11 +44,11 @@ class Person : JsonModel {
 }
 
 class Phone : JsonModel {
-    var id by property<Int>()
-    fun idProperty() = getProperty(Phone::id)
+    val idProperty = SimpleIntegerProperty()
+    var id by idProperty
 
-    var number by property<String>()
-    fun numberProperty() = getProperty(Phone::number)
+    val numberProperty = SimpleStringProperty()
+    var number by numberProperty
 
     override fun updateModel(json: JsonObject) {
         with(json) {
@@ -66,7 +66,7 @@ class Phone : JsonModel {
 }
 ```
 
-> JsonModel with getters/setters and property() accessor functions to be JavaFX Property compatible
+> JsonModel with getters/setters and property\(\) accessor functions to be JavaFX Property compatible
 
 When you implement `JsonModel` you also get the `copy` function, which creates a copy of your model object.
 
