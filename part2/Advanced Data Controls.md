@@ -1,4 +1,4 @@
-# 13. Advanced Data Controls
+# Advanced Data Controls
 
 This section will primarily address more advanced features you can leverage with data controls, particulary with the `TableView` and `ListView`.
 
