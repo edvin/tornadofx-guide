@@ -4,34 +4,34 @@ This chapter is geared primarily towards folks who already have familiarity with
 
 If you have no interest in OSGi currently, you are welcome to skip this chapter. However, it is highly recommended to at least know what it is so you can identify moments in the future that make it handy.
 
-TornadoFX comes with the metadata needed for an OSGi runtime to detect and enable it. When the `tornadofx.jar` is
-loaded in an OSGi container, a number of services are automatically installed in the runtime. These services enable
+TornadoFX comes with the metadata needed for an OSGi runtime to detect and enable it. When the `tornadofx.jar` is  
+loaded in an OSGi container, a number of services are automatically installed in the runtime. These services enable  
 some very interesting features which we will discuss.
 
 ## OSGi Introduction
 
-Please be familiar with the basics of OSGi before you continue this chapter. To get a quick overview of OSGi
-technology you can check out the [tutorials](http://enroute.osgi.org/book/150-tutorials.html) on the
-[OSGi Alliance website](https://www.osgi.org/). The
-[Apache Felix tutorials](http://felix.apache.org/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html)
+Please be familiar with the basics of OSGi before you continue this chapter. To get a quick overview of OSGi  
+technology you can check out the [tutorials](http://enroute.osgi.org/book/150-tutorials.html) on the  
+[OSGi Alliance website](https://www.osgi.org/). The  
+[Apache Felix tutorials](http://felix.apache.org/documentation/tutorials-examples-and-presentations/apache-felix-osgi-tutorial.html)  
 are also a good starting point reference for basic OSGi patterns.
 
 ## Services
 
-When the TornadoFX JAR is loaded, you can create your own TornadoFX bundle and create your
-application any way you like. However, some usage patterns are so typical and useful that TornadoFX has built-in
+When the TornadoFX JAR is loaded, you can create your own TornadoFX bundle and create your  
+application any way you like. However, some usage patterns are so typical and useful that TornadoFX has built-in  
 support for them.
 
 ### Dynamic Applications
 
-The dynamic nature of OSGi lends itself well to GUI applications in general. The ability to have certain
-functionality come and go as the environment changes can be powerful. JavaFX itself is unfortunately written in
-a way that prevents you from starting another JavaFX application after the initial application shuts down. To
-circumvent this shortcoming and enable you to stop and start your application as many times as you want, TornadoFX
-provides a way to register your `App` class with an application proxy which will keep the JavaFX environment running
+The dynamic nature of OSGi lends itself well to GUI applications in general. The ability to have certain  
+functionality come and go as the environment changes can be powerful. JavaFX itself is unfortunately written in  
+a way that prevents you from starting another JavaFX application after the initial application shuts down. To  
+circumvent this shortcoming and enable you to stop and start your application as many times as you want, TornadoFX  
+provides a way to register your `App` class with an application proxy which will keep the JavaFX environment running  
 even when your application shuts down.
 
-To get started, implement a `BundleActivator` that provides a means to `start()` and `stop()` an `App`. Registering your application for this functionality can be done by calling `context.registerApplication` with your
+To get started, implement a `BundleActivator` that provides a means to `start()` and `stop()` an `App`. Registering your application for this functionality can be done by calling `context.registerApplication` with your  
 `App` class as the single parameter in your bundle `Activator`:
 
 ```kotlin
@@ -45,7 +45,7 @@ class Activator : BundleActivator {
 }
 ```
 
-If you prefer OSGi declarative services instead, this will have the same effect provided that you have the OSGi DS
+If you prefer OSGi declarative services instead, this will have the same effect provided that you have the OSGi DS  
 bundle loaded:
 
 ```kotlin
@@ -55,8 +55,8 @@ class AppRegistration : ApplicationProvider {
 }
 ```
 
-Provided that the TornadoFX bundle is available in your container, this is enough to start your application
-automatically once the bundle is activated. You can now stop and start it as many times as you like by stopping and
+Provided that the TornadoFX bundle is available in your container, this is enough to start your application  
+automatically once the bundle is activated. You can now stop and start it as many times as you like by stopping and  
 starting the bundle.
 
 ### Dynamic Stylesheets
@@ -83,19 +83,19 @@ class StyleRegistration : StylesheetProvider {
 }
 ```
 
-Whenever this bundle is loaded, every active `View` will have this stylesheet applied. When the bundle is unloaded,
-the stylesheet is automatically removed. If you want to provide multiple stylesheets based on the same style
-classes, it is a good idea to create one bundle that exports the `cssclass` definitions, so that your Views can
+Whenever this bundle is loaded, every active `View` will have this stylesheet applied. When the bundle is unloaded,  
+the stylesheet is automatically removed. If you want to provide multiple stylesheets based on the same style  
+classes, it is a good idea to create one bundle that exports the `cssclass` definitions, so that your Views can  
 reference these styles, and the stylesheet bundles can create selectors based on them.
 
 ### Dynamic Views
 
-A cool aspect of OSGi is the ability to have UI elements pop up when they become available. A typical use case
-could be a "dashboard" application. In this example, the base application bundle contains a `View` that can hold other
-Views, and tells the TornadoFX OSGi Runtime that it would like to automatically embed Views if they meet certain
+A cool aspect of OSGi is the ability to have UI elements pop up when they become available. A typical use case  
+could be a "dashboard" application. In this example, the base application bundle contains a `View` that can hold other  
+Views, and tells the TornadoFX OSGi Runtime that it would like to automatically embed Views if they meet certain  
 criteria.
 
-For instance, we can create a `View` that contains a `VBox`. We tell the TornadoFX OSGi Runtime that we would like to have other Views
+For instance, we can create a `View` that contains a `VBox`. We tell the TornadoFX OSGi Runtime that we would like to have other Views  
 embedded into it if they are tagged with the discriminator **dashboard**:
 
 ```kotlin
@@ -109,8 +109,8 @@ class Dashboard : View() {
 }
 ```
 
-If the `addViewsWhen` function returns true, the `View` is added to the `VBox`. To offer up Views to this Dashboard,
-another bundle would declare that it wants to export it's View by setting the `dashboard` discriminator. Here we register
+If the `addViewsWhen` function returns true, the `View` is added to the `VBox`. To offer up Views to this Dashboard,  
+another bundle would declare that it wants to export it's View by setting the `dashboard` discriminator. Here we register  
 a fictive `MusicPlayer` view to be docked into the dashboard when it's bundle becomes active.
 
 ```kotlin
@@ -134,10 +134,10 @@ class MusicPlayerRegistration : ViewProvider {
 }
 ```
 
-The `addViewsWhen` function is smart enough to inspect the `VBox` and find out how to add the child View
-it was presented. It can also figure out that if you call the function on a `TabPane` it would create a new `Tab`
-and set the title to the child View title etc. If you would like to do something custom with the presented Views,
-you can return `false` from the function so that the child View will not be added automatically and then do whatever
+The `addViewsWhen` function is smart enough to inspect the `VBox` and find out how to add the child View  
+it was presented. It can also figure out that if you call the function on a `TabPane` it would create a new `Tab`  
+and set the title to the child View title etc. If you would like to do something custom with the presented Views,  
+you can return `false` from the function so that the child View will not be added automatically and then do whatever  
 you want with it. Even though the Tab example is supported out of the box, you could do it explicitly like this:
 
 ```kotlin
@@ -149,51 +149,53 @@ tabPane.addViewsWhen {
     false
 }
 ```
+
 > Manual handling of dynamic Views
 
 ## Create your first OSGi bundle
 
-A good starting point is the `tornadofx-maven-osgi-project` template in the TornadoFX IntelliJ IDEA plugin. This
-contains everything you need to build OSGi bundles from your sources. The OSGI IDEA plugin makes it very easy to
-setup and run an OSGi container directly from the IDE. There is a screencast at
-https://www.youtube.com/watch?v=liOFCH5MMKk that shows these concepts in action.
+A good starting point is the `tornadofx-maven-osgi-project` template in the TornadoFX IntelliJ IDEA plugin. This  
+contains everything you need to build OSGi bundles from your sources. The OSGI IDEA plugin makes it very easy to  
+setup and run an OSGi container directly from the IDE. There is a screencast at  
+[https://www.youtube.com/watch?v=liOFCH5MMKk](https://www.youtube.com/watch?v=liOFCH5MMKk) that shows these concepts in action.
 
 ## OSGi Console
 
-TornadoFX has a built in OSGi console from which you can inspect bundles, change their state and even install new
-bundles with drag and drop. You can bring up the console with `Alt-Meta-O` or configure another shortcut by setting
+TornadoFX has a built in OSGi console from which you can inspect bundles, change their state and even install new  
+bundles with drag and drop. You can bring up the console with `Alt-Meta-O` or configure another shortcut by setting  
 `FX.osgiConsoleShortcut` or programmatically opening the `OSGIConsole` View.
 
 ![](http://i.imgur.com/LruivUP.png)
 
 ## Requirements
 
-To run TornadoFX in an OSGi container, you need to load the required bundles. Usually this is a matter of dumping
-these jars into the `bundle` directory of the container. Note that any jar that is to be used in an OSGi container
-needs to be "OSGi enabled", which effectively means adding some OSGi specific entries the `META-INF/MANIFEST.MF`
+To run TornadoFX in an OSGi container, you need to load the required bundles. Usually this is a matter of dumping  
+these jars into the `bundle` directory of the container. Note that any jar that is to be used in an OSGi container  
+needs to be "OSGi enabled", which effectively means adding some OSGi specific entries the `META-INF/MANIFEST.MF`  
 file.
 
-We provided a complete installation with Apache Felix and TornadoFX already installed at
-http://tornadofx.tornado.no/felix-tornadofx-5.4.0.zip. Remember to swap the `tornadofx.jar` for the latest version,
+We provided a complete installation with Apache Felix and TornadoFX already installed at  
+[http://tornadofx.io/\#felix](http://tornadofx.tornado.no/felix-tornadofx-5.4.0.zip). Remember to swap the `tornadofx.jar` for the latest version,  
 as this bundle is most likely lagging a couple of versions behind.
 
-These are the required artifacts for any TornadoFX application running in an OSGi container. Your container might
+These are the required artifacts for any TornadoFX application running in an OSGi container. Your container might  
 already be bundle with some of these, so check the container documentation for further details.
 
-| Artifact              | Version | Binary                                                                                                          |
-|:----------------------|:--------|:----------------------------------------------------------------------------------------------------------------|
-| JavaFX 8 OSGi Support | 8.0     | [jar](http://repo1.maven.org/maven2/no/tornado/javafx-osgi/8.0/javafx-osgi-8.0.jar)                             |
-| TornadoFX             | 1.5.5   | [jar](http://repo1.maven.org/maven2/no/tornado/tornadofx/1.5.5/tornadofx-1.5.5.jar)                             |
-| Kotlin OSGI Bundle*   | 1.0.3   | [jar](http://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-osgi-bundle/1.0.3/kotlin-osgi-bundle-1.0.3.jar) |
-| Configuration Admin** | 1.8.10  | [jar](http://www-eu.apache.org/dist//felix/org.apache.felix.configadmin-1.8.10.jar)                             |
-| Commons Logging       | 1.2     | [jar](http://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar)                |
-| Apache HTTP-Client    | 4.5.2   | [jar](http://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient-osgi/4.5.2/httpclient-osgi-4.5.2.jar)  |
-| Apache HTTP-Core      | 4.4.5   | [jar](http://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore-osgi/4.4.5/httpcore-osgi-4.4.5.jar)      |
-| JSON                  | 1.0.4   | [jar](http://repo1.maven.org/maven2/org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar)                        |
+| Artifact | Version | Binary |
+| :--- | :--- | :--- |
+| JavaFX 8 OSGi Support | 8.0 | [jar](http://repo1.maven.org/maven2/no/tornado/javafx-osgi/8.0/javafx-osgi-8.0.jar) |
+| TornadoFX | 1.7.12 | [jar](http://repo1.maven.org/maven2/no/tornado/tornadofx/1.5.5/tornadofx-1.5.5.jar) |
+| Kotlin OSGI Bundle\* | 1.5.11 | [jar](http://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-osgi-bundle/1.0.3/kotlin-osgi-bundle-1.0.3.jar) |
+| Configuration Admin\*\* | 1.8.10 | [jar](http://www-eu.apache.org/dist//felix/org.apache.felix.configadmin-1.8.10.jar) |
+| Commons Logging | 1.2 | [jar](http://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar) |
+| Apache HTTP-Client | 4.5.2 | [jar](http://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient-osgi/4.5.2/httpclient-osgi-4.5.2.jar) |
+| Apache HTTP-Core | 4.4.5 | [jar](http://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore-osgi/4.4.5/httpcore-osgi-4.4.5.jar) |
+| JSON | 1.0.4 | [jar](http://repo1.maven.org/maven2/org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar) |
 
-`*` The Kotlin OSGi bundle contains special versions of `kotlin-stdlib` and `kotlin-reflect` with the required OSGi
+`*` The Kotlin OSGi bundle contains special versions of `kotlin-stdlib` and `kotlin-reflect` with the required OSGi  
 manifest information.
 
-`**` This links to the [Apache Felix](http://felix.apache.org) implementation of the OSGi Config Admin interface.
-Feel free to use the implementation from your OSGi container instead. Some containers, like Apache Karaf, already
+`**` This links to the [Apache Felix](http://felix.apache.org) implementation of the OSGi Config Admin interface.  
+Feel free to use the implementation from your OSGi container instead. Some containers, like Apache Karaf, already  
 has the Config Admin bundle loaded, so you won't need it there.
+
