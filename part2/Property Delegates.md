@@ -104,11 +104,11 @@ By default properties will have a [Platform Type](https://kotlinlang.org/docs/re
 
 ```kotlin
 class Bar {
-    var foo:String by property<String>()
+    var foo by property<String>()
     fun fooProperty() = getProperty(Bar::foo)
     
     val bazProperty = SimpleStringProperty()
-    var baz: String? by bazProperty
+    var baz by bazProperty
     
     init {
         foo = null
