@@ -98,6 +98,49 @@ class Bar {
 
 Here you define the JavaFX property manually and delegate the getters and setters directly from the property. This might look cleaner to you, and so you are free to choose whatever syntax you are most comfortable with. However, the first alternative creates a JavaFX compliant property in that it exposes the `Property` via a function called `fooProperty()`, while the latter simply exposes a variable called `fooProperty`. For TornadoFX there is no difference, but if you interact with legacy libraries that require a property function you might need to stick with the first one.
 
+#### Null safety of Properties
+
+By default properties will have a [Platform Type](https://kotlinlang.org/docs/reference/java-interop.html#notation-for-platform-types) with uncertain nullability and completely ignore the null safety of Kotlin:
+
+```kotlin
+class Bar {
+    var foo:String by property<String>()
+    fun fooProperty() = getProperty(Bar::foo)
+    
+    val bazProperty = SimpleStringProperty()
+    var baz: String? by bazProperty
+    
+    init {
+        foo = null
+        foo.length // Will throw NPE during runtime
+        
+        baz = null
+        baz.length // Will throw NPE during runtime
+    }
+}
+```
+
+To remedy this you can set the type of your property on the `var` (not on the Property-Object itself!). But keep in mind to set a default
+value on the property object or you will get an NPE anyways:
+
+```kotlin
+class Bar {
+    var foo:String by property<String>("") // Non-nullable String with default value
+    fun fooProperty() = getProperty(Bar::foo)
+    
+    val bazProperty = SimpleStringProperty()
+    var baz: String? by bazProperty // Nullable String
+    
+    init {
+        foo = null // Will no longer compile
+        foo.length
+        
+        baz = null
+        baz.length // Will no longer compile
+    }
+}
+```
+
 ### FXML Delegate
 
 If you have a given `MyView` View with a neighboring FXML file `MyView.fxml` defining the layout, the `fxid()` property delegate will retrieve the control defined in the FXML file. The control must have an `fx:id` that is the same name as the variable.
