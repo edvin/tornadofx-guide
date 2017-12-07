@@ -121,14 +121,14 @@ class Bar {
 ```
 
 To remedy this you can set the type of your property on the `var` (not on the Property-Object itself!). But keep in mind to set a default
-value on the property object or you will get an NPE anyways:
+value on the property object when you set the var to be nullable or you will get an NPE anyways:
 
 ```kotlin
 class Bar {
     var foo:String by property<String>("") // Non-nullable String with default value
     fun fooProperty() = getProperty(Bar::foo)
     
-    val bazProperty = SimpleStringProperty()
+    val bazProperty = SimpleStringProperty() // No default needed
     var baz: String? by bazProperty // Nullable String
     
     init {
