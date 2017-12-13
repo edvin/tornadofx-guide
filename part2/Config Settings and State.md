@@ -13,7 +13,7 @@ class LoginScreen : View() {
     val loginController: LoginController by inject()
     val username = SimpleStringProperty(this, "username", config.string("username"))
     val password = SimpleStringProperty(this, "password", config.string("password"))
-    
+
     override val root = form {
        fieldset("Login") {
            field("Username:") { textfield(username) }
@@ -36,25 +36,26 @@ class LoginScreen : View() {
             }
        }
     }
-    
+
     fun showMainScreen() {
         // hide LoginScreen and show the main UI of the application
     }
 }
 ```
+
 > Login screen with credentials stored in the view specific config object
 
-The UI is defined with the `TornadoFx` type safe builders, which basically contains a `form` with two `TextField`'s and a `Button`.
-When the view is loaded, we assign the username and password values from the config object.
-These values might be null at this point, if no prior successful login was performed.
+The UI is defined with the `TornadoFx` type safe builders, which basically contains a `form` with two `TextField`'s and a `Button`.  
+When the view is loaded, we assign the username and password values from the config object.  
+These values might be null at this point, if no prior successful login was performed.  
 We then bind the `username` and `password` to the corresponding `TextField`'s.
 
-Last but not least, we define the action for the login button. Upon login, it calls the `loginController#tryLogin` function which takes the username and password from the `StringBindings` (which represent the input of the `TextField`s),
+Last but not least, we define the action for the login button. Upon login, it calls the `loginController#tryLogin` function which takes the username and password from the `StringBindings` \(which represent the input of the `TextField`s\),  
 calls out to the service and returns true or false.
 
 If the result is true, we update the username and password in the config object and calls save on it. Finally, we call `showMainScreen` which could hide the login screen and show the main screen of the application.
 
-_Please not that the example is not a best practice for storing sensitive data, it merely illustrates how you can use the config object._
+_Please not that the above example is not a best practice for storing sensitive data, it merely illustrates how you can use the config object._
 
 ## Data types and default values
 
@@ -113,7 +114,7 @@ The `config` object supports `JsonObject`, `JsonArray` and `JsonModel`. You set 
 
 ## The `preferences` helper
 
-As the `config` helper stores the information in a folder called `conf` per component (view, controller) the `preferences` helper will save settings into an OS specific way. In Windows systems they will be stored `HKEY_CURRENT_USER/Software/JavaSoft/....` on Mac os in `~/Library/Preferences/com.apple.java.util.prefs.plist` and on Linux system in `~/.java`. Where the `config` helper saves per component. The `preferences` helper is meant to be used application wide:
+As the `config` helper stores the information in a folder called `conf` per component \(view, controller\) the `preferences` helper will save settings into an OS specific way. In Windows systems they will be stored `HKEY_CURRENT_USER/Software/JavaSoft/....` on Mac os in `~/Library/Preferences/com.apple.java.util.prefs.plist` and on Linux system in `~/.java`. Where the `config` helper saves per component. The `preferences` helper is meant to be used application wide:
 
 ```kotlin
 preferences("application") {
@@ -121,6 +122,7 @@ preferences("application") {
    putString("String", "a string")
 }
 ```
+
 Retrieving preferences:
 
 ```kotlin
@@ -133,3 +135,4 @@ preferences("test app") {
 ```
 
 The `preferences` helper is a TornadoFX builder around [java.util.Preferences](http://docs.oracle.com/javase/8/docs/technotes/guides/preferences/overview.html)
+
