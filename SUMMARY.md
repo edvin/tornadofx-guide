@@ -27,6 +27,5 @@
   * [JSON and REST](part2/JSON and REST.md)
   * [Dependency Injection](part2/Dependency Injection.md)
   * [Wizard](part2/Wizard.md)
-
-
-
+* [Part 3: Book Book](part3/0. Subsection.md)
+  * [Snippets](part3/Snippets.md)
