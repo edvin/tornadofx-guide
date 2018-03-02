@@ -43,7 +43,7 @@ column("Type", Room::type).remainingWidth()
 Now it is apparent the **Bed** column looks cramped, being pushed all the way to the left. We configure it to keep its desired width based on the content plus 50 pixels padding:
 
 ```kotlin
-column("Bed", Room:bed").contentWidth(padding = 50.0)
+column("Bed", Room:bed).contentWidth(padding = 50.0)
 ```
 
 The result is a much more pleasant visual impression (Figure 5.9) :
@@ -57,7 +57,7 @@ This fine-tuning may not seem like a big deal, but it means a lot to people who 
 If the user increases the width of the **Number** column, the **Type** column will gradually decrease in width, until it reaches its default width of 10 pixels (the JavaFX default). After that, the **Bed** column must start giving away its space. We don't ever want the **Bed** column to be smaller that what we configured, so we tell it to use its content-based width plus the padding we added as its minimum width:
 
 ```kotlin
-column("Bed", Room:bed").contentWidth(padding = 50.0, useAsMin = true)
+column("Bed", Room:bed).contentWidth(padding = 50.0, useAsMin = true)
 ```
 
 Trying to decrease the **Bed** column either by explicitly expanding the **Type** column or implicitly by expanding the **Number** column will simply be denied by the resize policy. It is worth noting that there is also a `useAsMax` choice for the `contentWidth` resize type. This would effectively result in a hard-coded, unresizable column, based on the required content width plus any configured padding. This would be a good policy for the **\#** column:
