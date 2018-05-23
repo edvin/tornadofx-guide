@@ -99,7 +99,7 @@ class MyApp : App() {
     val api: Rest by inject()
 
     init {
-        api.baseURI = "http://contoso.com/api"
+        api.baseURI = "https://contoso.com/api"
     }
 }
 ```

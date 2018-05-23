@@ -134,5 +134,5 @@ preferences("test app") {
 }
 ```
 
-The `preferences` helper is a TornadoFX builder around [java.util.Preferences](http://docs.oracle.com/javase/8/docs/technotes/guides/preferences/overview.html)
+The `preferences` helper is a TornadoFX builder around [java.util.Preferences](https://docs.oracle.com/javase/8/docs/technotes/guides/preferences/overview.html)
 

@@ -175,22 +175,21 @@ needs to be "OSGi enabled", which effectively means adding some OSGi specific en
 file.
 
 We provided a complete installation with Apache Felix and TornadoFX already installed at  
-[http://tornadofx.io/\#felix](http://tornadofx.tornado.no/felix-tornadofx-5.4.0.zip). Remember to swap the `tornadofx.jar` for the latest version,  
-as this bundle is most likely lagging a couple of versions behind.
+[http://tornadofx.io/\#felix](https://tornadofx.io/#felix).
 
 These are the required artifacts for any TornadoFX application running in an OSGi container. Your container might  
 already be bundle with some of these, so check the container documentation for further details.
 
 | Artifact | Version | Binary |
 | :--- | :--- | :--- |
-| JavaFX 8 OSGi Support | 8.0 | [jar](http://repo1.maven.org/maven2/no/tornado/javafx-osgi/8.0/javafx-osgi-8.0.jar) |
-| TornadoFX | 1.7.12 | [jar](http://repo1.maven.org/maven2/no/tornado/tornadofx/1.5.5/tornadofx-1.5.5.jar) |
-| Kotlin OSGI Bundle\* | 1.5.11 | [jar](http://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-osgi-bundle/1.0.3/kotlin-osgi-bundle-1.0.3.jar) |
-| Configuration Admin\*\* | 1.8.10 | [jar](http://www-eu.apache.org/dist//felix/org.apache.felix.configadmin-1.8.10.jar) |
-| Commons Logging | 1.2 | [jar](http://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar) |
-| Apache HTTP-Client | 4.5.2 | [jar](http://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient-osgi/4.5.2/httpclient-osgi-4.5.2.jar) |
-| Apache HTTP-Core | 4.4.5 | [jar](http://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore-osgi/4.4.5/httpcore-osgi-4.4.5.jar) |
-| JSON | 1.0.4 | [jar](http://repo1.maven.org/maven2/org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar) |
+| JavaFX 8 OSGi Support | 8.0 | [jar](https://repo1.maven.org/maven2/no/tornado/javafx-osgi/8.0/javafx-osgi-8.0.jar) |
+| TornadoFX | 1.7.12 | [jar](https://repo1.maven.org/maven2/no/tornado/tornadofx/1.5.5/tornadofx-1.5.5.jar) |
+| Kotlin OSGI Bundle\* | 1.5.11 | [jar](https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-osgi-bundle/1.0.3/kotlin-osgi-bundle-1.0.3.jar) |
+| Configuration Admin\*\* | 1.8.10 | [jar](https://www-eu.apache.org/dist//felix/org.apache.felix.configadmin-1.8.10.jar) |
+| Commons Logging | 1.2 | [jar](https://repo1.maven.org/maven2/commons-logging/commons-logging/1.2/commons-logging-1.2.jar) |
+| Apache HTTP-Client | 4.5.2 | [jar](https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient-osgi/4.5.2/httpclient-osgi-4.5.2.jar) |
+| Apache HTTP-Core | 4.4.5 | [jar](https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore-osgi/4.4.5/httpcore-osgi-4.4.5.jar) |
+| JSON | 1.0.4 | [jar](https://repo1.maven.org/maven2/org/glassfish/javax.json/1.0.4/javax.json-1.0.4.jar) |
 
 `*` The Kotlin OSGi bundle contains special versions of `kotlin-stdlib` and `kotlin-reflect` with the required OSGi  
 manifest information.
