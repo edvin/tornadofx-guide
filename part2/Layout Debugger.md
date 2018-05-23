@@ -13,7 +13,7 @@ While the debugger is active you can hover over any node in your View and it wil
 
 When you hover over the node tree in the debugger, the corresponding node is also highlighted directly in the View.
 
-![](http://i.imgur.com/kKH8ydl.gif)
+![](https://i.imgur.com/kKH8ydl.gif)
 
 ### Stop a debugging session
 

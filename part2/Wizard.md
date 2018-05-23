@@ -64,7 +64,7 @@ class CustomerWizard : Wizard("Create customer", "Provide customer information")
 
 The result can be seen in Figure 21.1.
 
-![](http://i.imgur.com/PHgLN74.png)
+![](https://i.imgur.com/PHgLN74.png)
 
 **Figure 21.1**
 
@@ -106,7 +106,7 @@ The commit function now controls the completed state of our wizard page, hence c
 to navigate to the address page. If we try to navigate without filling in the name, we will be granted by the
 validation error message in Figure 21.2:
  
-![](http://i.imgur.com/3ulkEDC.png)
+![](https://i.imgur.com/3ulkEDC.png)
  
 **Figure 21.2**
  

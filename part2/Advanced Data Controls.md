@@ -23,7 +23,7 @@ Here is a picture of the table with the SmartResize policy activated \(Figure 5.
 
 **Figure 13.1**
 
-![](http://i.imgur.com/chugPrR.png)
+![](https://i.imgur.com/chugPrR.png)
 
 The default settings gave each column the space it needs based on its content, and gave the remaining width to the last column. When you resize a column by dragging the divider between column headers, only the column immediately to the right will be affected, which avoids pushing the columns to the right outside the viewport of the `TableView`.
 
@@ -37,7 +37,7 @@ column("Type", Room::type).remainingWidth()
 
 **Figure 13.2**
 
-![](http://i.imgur.com/fHgkqnZ.png)
+![](https://i.imgur.com/fHgkqnZ.png)
 
 Now it is apparent the **Bed** column looks cramped, being pushed all the way to the left. We configure it to keep its desired width based on the content plus 50 pixels padding:
 
@@ -49,7 +49,7 @@ The result is a much more pleasant visual impression \(Figure 5.9\) :
 
 **Figure 13.3**
 
-![](http://i.imgur.com/O0VeONz.png)
+![](https://i.imgur.com/O0VeONz.png)
 
 This fine-tuning may not seem like a big deal, but it means a lot to people who are forced to stare at your software all day! It is the little things that make software pleasant to use.
 
@@ -75,7 +75,7 @@ When you resize the `TableView`, the **Number** column will gradually expand to 
 
 **Figure 13.4**
 
-![](http://i.imgur.com/NP04XNd.png)
+![](https://i.imgur.com/NP04XNd.png)
 
 An alternative approach to percentage width is to specify a weight. This time we add weights to both **Number** and **Type**:
 
@@ -88,7 +88,7 @@ The two weighted columns share the remaining space after the other columns have 
 
 **Figure 13.5**
 
-![](http://i.imgur.com/lm47oxU.png)
+![](https://i.imgur.com/lm47oxU.png)
 
 This setting will make sure we keep the mentioned ratio between the two columns, but it might become problematic if the `TableView` is resized to be very small. The the **Number** column would not have space to show all of its content, so we guard against that by specifying that it should never grow below the space it needs to show its content, plus some padding, for good measure:
 
@@ -172,7 +172,7 @@ class Person(val name: String, val birthday: LocalDate) {
 }
 ```
 
-**Figure 5.2** - A custom cell rendering for `ListView` ![](http://i.imgur.com/o3r2TuR.png)
+**Figure 5.2** - A custom cell rendering for `ListView` ![](https://i.imgur.com/o3r2TuR.png)
 
 The `cellFormat` function lets you configure the `text` and/or `graphic` property of the cell whenever it comes into view on the screen. The cells themselves are reused, but whenever the `ListView` asks the cell to update its content, the `cellFormat` function is called. In our example we only assign to `graphic`, but if you just want to change the string representation you should assign it to `text`. It is completely legitimate to assign it to both `text` and `graphic`. The values will automatically be cleared by the `cellFormat` function when a certain list cell is not showing an active item.
 

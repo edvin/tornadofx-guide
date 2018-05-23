@@ -22,7 +22,7 @@ class MyApp : App(Workspace::class)
 
 **Figure 16.1**
 
-![](http://i.imgur.com/7k3Uskm.png)
+![](https://i.imgur.com/7k3Uskm.png)
 
 The resulting Workspace consists of a button bar with four default buttons and an empty content area below it.
 The content area can house any `UIComponent`. You add a component to the `content` area by calling `workspace.dock()` on it. If you
@@ -41,7 +41,7 @@ class MyApp : App(Workspace::class) {
 
 **Figure 16.2**
 
-![](http://i.imgur.com/E79aeDl.png)
+![](https://i.imgur.com/E79aeDl.png)
 
 To keep things focused, we will leave out the `CustomerList` implementation code which simply displays a `TableView` with some Customers. What is interesting however, is that the **Refresh** button in the `Workspace` was enabled when the `CustomerList` was docked, while the **Save** button remained disabled.
 
@@ -204,7 +204,7 @@ This application happens to be in Norwegian, and some of the information in the 
 
 **Figure 16.3**
 
-![](http://i.imgur.com/BbqCYg9.png)
+![](https://i.imgur.com/BbqCYg9.png)
 
 You will notice that the **Save** button is enabled in this View. This is because the `savable` property is bound to
 the dirty state property of the view model:
@@ -262,7 +262,7 @@ override fun onDock() {
 
 The Workspace will now look like in Figure **16.4**
 
-![](http://i.imgur.com/mSKv57I.png)
+![](https://i.imgur.com/mSKv57I.png)
 
 It looks like a default button. You can remove the border around the button by adding the `icon-only` css class to it. Optionally
 you can configure an icon for the graphic node if you like. The built in icons are svg shapes added in the built in `workspace.css`
@@ -286,7 +286,7 @@ In a real application you would use a css class so you don't need to configure t
 
 **Figure 16.5**
 
-![](http://i.imgur.com/32pmJAs.png)
+![](https://i.imgur.com/32pmJAs.png)
 
 ## Navigating between docked views
 
@@ -339,7 +339,7 @@ and lastly the `onSave` and `onRefresh` functions are implemented to react to th
 
 **Figure 16.6**
 
-![](http://i.imgur.com/ZPomPti.png)
+![](https://i.imgur.com/ZPomPti.png)
 
 We can see that the `title` and `heading` are indeed displaying separate information. Since we haven't made any edits
 yet, the **Save** button is disabled, while the **Refresh** button is available, and would roll back any changes made
@@ -472,7 +472,7 @@ class TabbedWorkspace: Workspace("Tabbed Workspace", NavigationMode.Tabs) {
 
 **Figure 16.7**
 
-![](http://i.imgur.com/jq6Ymsr.png)
+![](https://i.imgur.com/jq6Ymsr.png)
 
 > A Workspace in Tabs mode automatically hides the navigation buttons as they are no longer needed
 
@@ -565,14 +565,14 @@ In Figure 16.8 we have expanded the _Links_ drawer item. Notice how it pushes th
 
 **Figure 16.8**
 
-![](http://i.imgur.com/HnQ2pFW.png)
+![](https://i.imgur.com/HnQ2pFW.png)
 
 By right clicking the drawer and checking the `Floating drawers` option, the expanded drawer item content will
 instead float above the content, like in Figure 16.9:
 
 **Figure 16.9**
 
-![](http://i.imgur.com/oiDvrMh.png)
+![](https://i.imgur.com/oiDvrMh.png)
 
 This could be a good idea depending on the available space and the nature of the docked content. You can change the
 floating drawer mode in code as well, by setting `leftDrawer.floatingDrawers = true`.

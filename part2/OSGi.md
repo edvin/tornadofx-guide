@@ -165,7 +165,7 @@ TornadoFX has a built in OSGi console from which you can inspect bundles, change
 bundles with drag and drop. You can bring up the console with `Alt-Meta-O` or configure another shortcut by setting  
 `FX.osgiConsoleShortcut` or programmatically opening the `OSGIConsole` View.
 
-![](http://i.imgur.com/LruivUP.png)
+![](https://i.imgur.com/LruivUP.png)
 
 ## Requirements
 
