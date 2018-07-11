@@ -74,6 +74,81 @@ with (config) {
 }
 ```
 
+## `ItemViewModel` in conjunction with the `config` helper
+
+The `config` helper can be seamlessly integrated with `ItemViewModel` described in [Editing Models and Validation](https://edvin.gitbooks.io/tornadofx-guide/content/part1/11.%20Editing%20Models%20and%20Validation.html).
+
+```kotlin
+import javafx.beans.property.SimpleBooleanProperty
+import javafx.beans.property.SimpleStringProperty
+import tornadofx.*
+
+data class Credentials(val username: String, val password: String)
+
+class CredentialsModel : ItemViewModel<Credentials>() {
+    val KEY_USERNAME = "username"
+    val KEY_PASSWORD = "password"
+    val KEY_REMEMBER = "remember"
+
+    val username = bind { SimpleStringProperty(item?.username, "", config.string(KEY_USERNAME)) }
+    val password = bind { SimpleStringProperty(item?.password, "", config.string(KEY_PASSWORD)) }
+    val remember = SimpleBooleanProperty(config.boolean(KEY_REMEMBER) ?: false)
+
+    override fun onCommit() {
+        // Save credentials only if the fields are successfully validated
+        if (remember.value) {
+            // and the checkbox is selected
+            with(config) {
+                set(KEY_USERNAME to username.value)
+                set(KEY_PASSWORD to password.value)
+                save()
+            }
+        }
+    }
+}
+
+class LoginScreen : View() {
+    private val model = CredentialsModel()
+
+    override val root = form {
+        fieldset("Login") {
+            field("Username:") { textfield(model.username).required() }
+            field("Password:") { passwordfield(model.password).required() }
+            checkbox("Remember credentials", model.remember).action {
+                // Save the state every time its value is changed
+                with(model.config) {
+                    set(model.KEY_REMEMBER to model.remember.value)
+                    save()
+                }
+            }
+            buttonbar {
+                button("Reset").action {
+                    model.rollback()
+                }
+                button("Login").action {
+                    // Save credentials every time user attempts to login
+                    model.commit {
+                        runAsync {
+                            // Try logging in
+                            if (model.username.value == "admin" && model.password.value == "secret")
+                                "Log in successful"
+                            else throw Exception("Invalid credentials")
+                        } success { response ->
+                            information("Info", response)
+                        } fail {
+                            error("Error", it.message)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+class LoginScreenApp : App(LoginScreen::class)
+```
+> This sample app utilizes `ItemViewModel` for validating the required fields and depending on the state of "Remember credentials" `checkbox` saves provided credentials each time user attempts to login. However state of the checkbox itself is saved each time the state changes. For encapsulation purposes the sample app uses `config` asociated with the `CredentialsModel` class.
+
 ## Configurable config path
 
 The `App` class can override the default path for config files by overriding `configBasePath`.
