@@ -62,7 +62,7 @@ Above the setup for Guice is shown. Setting up for Spring, in this case using `b
 This sets Spring up to scan for beans.
 
 ### Application startup
-```
+```kotlin
 class SpringExampleApp : App(SpringExampleView::class) {
     init {
         val springContext = ClassPathXmlApplicationContext("beans.xml")
@@ -73,7 +73,7 @@ class SpringExampleApp : App(SpringExampleView::class) {
 }
 ```
 This initialized the spring context and hooks it into tornadoFX via the `FX.dicontainer`. Now you can inject Spring beans like this:
-```
+```kotlin
 val helloBean : HelloBean by di()
 ```
 
@@ -99,6 +99,6 @@ class SpringExampleApp : App(SpringExampleView::class) {
 ```
 The second `getInstance` uses both the type of the bean and the id of the bean. Instantiating a bean is down as:
 
-```
+```kotlin
 val helloBean : HelloBean by di("helloWorld")
 ```
