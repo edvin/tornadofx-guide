@@ -19,7 +19,7 @@ tableview(rooms) {
 }
 ```
 
-Here is a picture of the table with the SmartResize policy activated \(Figure 5.7\):
+Here is a picture of the table with the SmartResize policy activated \(Figure 13.1\):
 
 **Figure 13.1**
 
@@ -29,7 +29,7 @@ The default settings gave each column the space it needs based on its content, a
 
 While this often presents a pleasant default, there is a lot more we can do to improve the user experience in this particular case. It is evident that our table did not need the full 800 pixels it was provided, but it gives us a nice chance to elaborate on the configuration options of the `SmartResize` policy.
 
-The bed column is way too big, and it seems more sensible to give the extra space to the **Type** column, since it might contain arbitrary long descriptions of the room. To give the extra space to the **Type** column, we change its column definition \(Figure 5.8\):
+The bed column is way too big, and it seems more sensible to give the extra space to the **Type** column, since it might contain arbitrary long descriptions of the room. To give the extra space to the **Type** column, we change its column definition \(Figure 13.2\):
 
 ```kotlin
 column("Type", Room::type).remainingWidth()
@@ -45,7 +45,7 @@ Now it is apparent the **Bed** column looks cramped, being pushed all the way to
 column("Bed", Room:bed).contentWidth(padding = 50.0)
 ```
 
-The result is a much more pleasant visual impression \(Figure 5.9\) :
+The result is a much more pleasant visual impression \(Figure 13.3\) :
 
 **Figure 13.3**
 
@@ -132,7 +132,7 @@ In the case where not all columns can be afforded their preferred width, all res
 
 ## Custom Cell Formatting in ListView
 
-Even though the default look of a `ListView` is rather boring \(because it calls `toString()` and renders it as text\) you can modify it so that every cell is a custom `Node` of your choosing. By calling `cellCache()`, TornadoFX provides a convenient way to override what kind of `Node` is returned for each item in your list \(Figure 5.2\).
+Even though the default look of a `ListView` is rather boring \(because it calls `toString()` and renders it as text\) you can modify it so that every cell is a custom `Node` of your choosing. By calling `cellCache()`, TornadoFX provides a convenient way to override what kind of `Node` is returned for each item in your list \(Figure 13.6\).
 
 ```kotlin
 class MyView: View() {
@@ -172,7 +172,9 @@ class Person(val name: String, val birthday: LocalDate) {
 }
 ```
 
-**Figure 5.2** - A custom cell rendering for `ListView` ![](https://i.imgur.com/o3r2TuR.png)
+**Figure 13.6** - A custom cell rendering for `ListView` 
+
+![](https://i.imgur.com/o3r2TuR.png)
 
 The `cellFormat` function lets you configure the `text` and/or `graphic` property of the cell whenever it comes into view on the screen. The cells themselves are reused, but whenever the `ListView` asks the cell to update its content, the `cellFormat` function is called. In our example we only assign to `graphic`, but if you just want to change the string representation you should assign it to `text`. It is completely legitimate to assign it to both `text` and `graphic`. The values will automatically be cleared by the `cellFormat` function when a certain list cell is not showing an active item.
 
