@@ -49,7 +49,7 @@ To keep things focused, we will leave out the `CustomerList` implementation code
 
 Whenever a `UIComponent` is docked in the `Workspace`, the **Refresh**, **Save**, and **Delete** buttons will be enabled by default. This happens because the `Workspace` looks at the `refreshable`, `savable` and `deletable` properties in the docked component. Every `UIComponent` returns a boolean property with the default value of `true`, which the `Workspace` then connects to the enabled state of these buttons. In the `CustomerList` example, the TornadoFX maintainers made sure the **Save** button was always disabled by overriding this property:
 
-```
+```kotlin
 override val savable = SimpleBooleanProperty(false)
 ```
 
@@ -58,7 +58,7 @@ We can achieve the same result by calling `disableSave()` in the `init` block, a
 We did not touch the other buttons, so they remain `true` as per the default. Whenever the `Refresh` button is called, it will fire the `onRefresh` function in the `View`. You can override this to provide your refresh action:
 
 
-```
+```kotlin
 class MyApp: App(MyWorkspace::class) {
     override fun onBeforeShow(view: UIComponent) {
         workspace.dock<MyView>()
