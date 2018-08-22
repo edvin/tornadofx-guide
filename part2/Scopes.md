@@ -33,7 +33,13 @@ class PersonList : View("Person List") {
 }
 ```
 
-The `edit` function creates a new `Scope` and injects a `PersonModel` configured with the selected user into that scope. Finally, it retrieves a `PersonEditor` in the context of the new scope and opens a new window.
+The `edit` function creates a new `Scope` and injects a `PersonModel` configured with the selected user into that scope. Finally, it retrieves a `PersonEditor` in the context of the new scope and opens a new window. `find` allows for the ability to pass in scopes as a parameter easily between classes, so be sure not to forget this step!  TornadoFX gives more insight on the ability for passing scopes in new instances of components:
+
+```kotlin
+fun <T: Component> find(componentType: Class<T>, scope: Scope = DefaultScope): T = 
+     inline fun <reified T: Component> find(scope: Scope = DefaultScope): T = 
+         find(T::class, scope)
+```
 
 When the `PersonEditor` is initialized, it will look up a `PersonModel` via injection. The default context for `inject` and `find` is always the scope that created the component, so it will look in the `personScope` we just created.
 
