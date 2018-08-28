@@ -149,6 +149,8 @@ class LoginScreenApp : App(LoginScreen::class)
 ```
 > This sample app utilizes `ItemViewModel` for validating the required fields and depending on the state of "Remember credentials" `checkbox` saves provided credentials each time user attempts to login. However state of the checkbox itself is saved each time the state changes. For encapsulation purposes the sample app uses `config` asociated with the `CredentialsModel` class.
 
+Note that the underlying store for `config` is a `java.util.Properties` object, which does not allow null values. For that reason, null values are not accepted in `config`.
+
 ## Configurable config path
 
 The `App` class can override the default path for config files by overriding `configBasePath`.
