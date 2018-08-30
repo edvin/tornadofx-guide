@@ -110,7 +110,7 @@ There are convenience functions to perform `GET`, `PUT`, `POST` and `DELETE` ope
 
 ```kotlin
 class CustomerController : Controller() {
-    val api = Rest by inject()
+    val api: Rest by inject()
 
     fun loadCustomers(): ObservableList<Customer> =
         api.get("customers").list().toModel()
