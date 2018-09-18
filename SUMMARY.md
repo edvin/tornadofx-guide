@@ -27,6 +27,7 @@
   * [JSON and REST](part2/JSON and REST.md)
   * [Dependency Injection](part2/Dependency Injection.md)
   * [Wizard](part2/Wizard.md)
+  * [Integrating with other tech](part2/Integration.md)
 * [Part 3: Cook Book](part3/0. Subsection.md)
   * [Snippets](part3/Snippets.md)
 
