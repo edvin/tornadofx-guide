@@ -236,12 +236,13 @@ from the server is pushed back into the model. This is completely optional, and 
 When a view is docked, the title of the Workspace will match the title of that view. There is also a heading
 text in the workspace that by default shows the same text as the title. The heading can be overriden by assigning to
 the `heading` variable or binding to the `headingProperty` property. If you want to completely remove the heading, augment
-the workspace with `workspace.headingContainer.removeFromParent()` or just hide it. You can also put whatever
+the workspace with `workspace.headingContainer.hide()` or just hide it. You can also put whatever
 nodes you want inside the heading container. You saw this trick in the CRM screenshot, where a Gravator icon was placed
 to the left of the customer name.
 
 Important: Modifications to the workspace must be made from `onDock`. Trying to modify the Workspace from `init` will likely fail, as
-the workspace is not guaranteed to be available while `init` is running.
+the workspace is not guaranteed to be available while `init` is running. You can not change the enable/disable state of native
+workspace buttons, as the workspace manages these internally based on the properties of the currently docked view.
 
 ## Dynamic elements in the ToolBar
 
