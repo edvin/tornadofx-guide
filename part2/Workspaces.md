@@ -240,6 +240,9 @@ the workspace with `workspace.headingContainer.removeFromParent()` or just hide 
 nodes you want inside the heading container. You saw this trick in the CRM screenshot, where a Gravator icon was placed
 to the left of the customer name.
 
+Important: Modifications to the workspace must be made from `onDock`. Trying to modify the Workspace from `init` will likely fail, as
+the workspace is not guaranteed to be available while `init` is running.
+
 ## Dynamic elements in the ToolBar
 
 Some views might need more buttons or functionality added to the ToolBar, but once you navigate away from the view it
