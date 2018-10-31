@@ -4,7 +4,7 @@ Scope is a simple construct that enables some interesting and helpful behavior i
 
 When you use `inject()` or `find()` to locate a `Controller` or a `View`, you will by default get back a singleton instance, meaning that wherever you locate that object in your code, you will get back the same instance. Scopes provide a way to make a `View` or `Controller` unique to a smaller subset of instances in your application.
 
-It can also be used to run multiple versions of the same application inside the same JVM, for example with [JPro](http://jpro.io/), which exposes TornadoFX application in a web browser.
+It can also be used to run multiple versions of the same application inside the same JVM, for example with [JPro](https://www.jpro.one/), which exposes TornadoFX application in a web browser.
 
 ## A Master/Detail example
 
@@ -98,7 +98,7 @@ Both approaches work equally well, but depending on your use case you might pref
 
 ## Global application scope
 
-As we hintet to initially, you can run multiple applications in the same JVM and keep them completely separate by using scopes. By default, JavaFX does not support multi tenancy, and can only start a single JavaFX application per JVM, but new technologies are emerging that leverages multitenancy and will even expose your JavaFX based applications to the web. One such technology is JPro.io, and TornadoFX supports multitenancy for JPro applications by leveraging scopes.
+As we hintet to initially, you can run multiple applications in the same JVM and keep them completely separate by using scopes. By default, JavaFX does not support multi tenancy, and can only start a single JavaFX application per JVM, but new technologies are emerging that leverages multitenancy and will even expose your JavaFX based applications to the web. One such technology is JPro.one, and TornadoFX supports multitenancy for JPro applications by leveraging scopes.
 
 There is no special JPro classes in TornadoFX, but supporting JPro is very simple by leveranging scopes:
 
