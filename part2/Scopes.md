@@ -1,8 +1,14 @@
 # Scopes
 
-Scope is a simple construct that enables some interesting and helpful behavior in a TornadoFX application.
+Scope is a simple construct that enables some interesting and helpful behavior in a TornadoFX application. A Scope can be viewed as the "context" with which the parent singleton `Component` and any possible children `Component`s that may exist in the same context. Within that context, it is easy to pass around the subset of instances from one `Component` to another.
 
-When you use `inject()` or `find()` to locate a `Controller` or a `View`, you will by default get back a singleton instance, meaning that wherever you locate that object in your code, you will get back the same instance. Scopes provide a way to make a `View` or `Controller` unique to a smaller subset of instances in your application.
+We should be explicit about what we allow to be put into the constructors of scopes, which takes a `Workspace` instance and a `ScopedInstance`. In most cases you can just wrap `ScopedInstance`s in a `ViewModel` in lieu of adding it to your classes - although it is much better if you have just a single property: an `ItemViewModel`.
+
+![alttext](https://github.com/ahinchman1/TornadoFX-DnD-TilesFX/blob/master/Scopes.png)
+
+When you use `inject()` or `find()` to locate a `Controller` or a `View`, you will, by default, get back a singleton instance, meaning that wherever you locate that object in your code, you will get back the same instance. Scopes provide a way to make a `View` or `Controller` unique to a smaller subset of instances in your application.
+
+Each `Component`, like `View`, `Fragment` and `Controller`, inherit whatever scope they were looked up in, so you normally don't need to mention the scope after looking up the "root" of your tree of elements.
 
 It can also be used to run multiple versions of the same application inside the same JVM, for example with [JPro](https://www.jpro.one/), which exposes TornadoFX application in a web browser.
 
