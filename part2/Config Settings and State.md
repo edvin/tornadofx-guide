@@ -157,7 +157,7 @@ The `App` class can override the default path for config files by overriding `co
 
 ```kotlin
 class MyApp : App(WelcomeView::class) {
-    override val configBasePath: Paths.get("/etc/myapp/conf")
+    override val configBasePath = Paths.get("/etc/myapp/conf")
 }
 ```
 
