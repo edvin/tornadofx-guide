@@ -36,7 +36,7 @@ val MyView : View() {
 }
 ```
 
-The `di` delegate accepts any bean type, while `inject` will only allow beans of type `Injectable`, which includes TornadoFX's `View` and `Controller`. This keeps a clean separation between your UI beans and any beans configured in the external dependency injection framework.
+The `di` delegate accepts any bean type, while `inject` will only allow beans of type `ScopedInstance`, which includes TornadoFX's `View` and `Controller`. This keeps a clean separation between your UI beans and any beans configured in the external dependency injection framework.
 
 ## Setting up for Spring
 
