@@ -40,8 +40,8 @@ class PersonList : View("Person List") {
 The `edit` function creates a new `Scope` and injects a `PersonModel` configured with the selected user into that scope. Finally, it retrieves a `PersonEditor` in the context of the new scope and opens a new window. `find` allows for the ability to pass in scopes as a parameter easily between classes, so be sure not to forget this step!  TornadoFX gives more insight on the ability for passing scopes in new instances of components:
 
 ```kotlin
-fun <T: Component> find(componentType: Class<T>, scope: Scope = DefaultScope): T = 
-     inline fun <reified T: Component> find(scope: Scope = DefaultScope): T = 
+fun <T: Component> find(componentType: Class<T>, scope: Scope = FX.defaultScope): T = 
+     inline fun <reified T: Component> find(scope: Scope = FX.defaultScope): T = 
          find(T::class, scope)
 ```
 
@@ -53,10 +53,10 @@ val model: PersonModel by inject()
 
 ## Breaking Out of the Current Scope
 
-When no scope is defined, injectable resources are looked up in the default scope. There is an item representing that scope called `DefaultScope`. In the above example, the editor might have called out to a `PersonController` to perform a save operation in a database or via a REST call. This `PersonController` is most probably stateless, so there is no need to create a separate controller for each edit window. To access the same controller in all editor windows, we supply the scope we want to find the controller in:
+When no scope is defined, injectable resources are looked up in the default scope. There is an item representing that scope called `FX.defaultScope`. In the above example, the editor might have called out to a `PersonController` to perform a save operation in a database or via a REST call. This `PersonController` is most probably stateless, so there is no need to create a separate controller for each edit window. To access the same controller in all editor windows, we supply the scope we want to find the controller in:
 
 ```kotlin
-val controller: PersonController by inject(DefaultScope)
+val controller: PersonController by inject(FX.defaultScope)
 ```
 
 This effectively makes the `PersonController` a true singleton object again, with only a single instance in the whole application.
