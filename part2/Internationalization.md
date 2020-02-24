@@ -54,7 +54,7 @@ The global bundle will automatically be changed to the bundle corresponding to t
 
 ### Overriding resource bundles
 
-If you want to change the bundle for a component after it's been initialized, or if you simply want to load a spesific bundle without relying on the conventions, simply assign the new bundle to the `messages` property of the component.
+If you want to change the bundle for a component after it's been initialized, or if you simply want to load a specific bundle without relying on the conventions, simply assign the new bundle to the `messages` property of the component.
 
 If you want to use the overriden resource bundle to load `FXML`, make sure you change the bundle before you load the root view:
 
