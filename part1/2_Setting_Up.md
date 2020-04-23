@@ -21,7 +21,7 @@ compileKotlin {
 }
 
 dependencies {
-    compile 'no.tornado:tornadofx:x.y.z'
+    implementation 'no.tornado:tornadofx:x.y.z'
 }
 ```
 
