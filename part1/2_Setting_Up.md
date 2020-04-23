@@ -6,7 +6,9 @@ Please note that TornadoFX is a Kotlin library, and therefore your project needs
 
 This guide will use Intellij IDEA to walk through certain examples. IDEA is the IDE of choice to work with Kotlin, although Eclipse has a plugin as well.
 
-## Gradle
+## If you are using Oracle JDK
+
+### Gradle
 
 For Gradle, you can set up the dependency directly from Maven Central. Provide the desired version number for the  `x.y.z` placeholder.
 
@@ -25,9 +27,7 @@ dependencies {
 }
 ```
 
-## Maven
-
-### If you are using Oracle JDK
+### Maven
 
 To import TornadoFX with Maven, add the following dependency to your POM file. Provide the desired version number for the  `x.y.z` placeholder.
 
@@ -49,7 +49,7 @@ Then this goes into `dependencies` block:
 </dependency>
 ```
 
-### If you are using OpenJDK
+## If you are using OpenJDK
 
 On Ubuntu 19.10, there is no longer any clean way to run OpenJDK 8 with JFX. OpenJDK in general does not include the JFX module libraries -- JFX support for OpenJDK is commonly provided by OpenJFX, which has a maven distribution as well as packages in various Linux distributions. However, the OpenJFX versions are tied to JDK versions (e.g. OpenJFX 8 is compatible with OpenJDK 8), and unfortunately the OpenJFX 8 version is not available in Ubuntu 19.10's packages, nor does it compile from source using the packaged OpenJDK 8.
 
@@ -57,7 +57,51 @@ The upshot of this is that if you wish to continue using OpenJDK (on Ubuntu), yo
 
 1) Stay on OpenJDK 8 but install OpenJFX 8 system wide by adding older dependencies to your system (e.g. https://bugs.launchpad.net/ubuntu/+source/openjfx/+bug/1799946/comments/7)
 
-2) Alternately, you can bite the bullet and upgrade to OpenJDK 11, and install OpenJFX via Maven. This solution is as follows:
+2) Alternately, you can bite the bullet and upgrade to OpenJDK 11, and install OpenJFX via Maven/Gradle. This solution is as follows:
+
+### Gradle
+
+a) Upgrade to OpenJDK 11 via your system's packaging tools.
+
+b) Add the OpenJFX gradle plugin:
+
+```
+plugins {
+    id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
+}
+```
+
+c) Add gradle dependencies:
+
+```
+javafx {
+    version = "11.0.2"
+    modules = ['javafx.controls', 'javafx.graphics']
+}
+
+dependencies {
+    implementation 'no.tornado:tornadofx:x.y.z'
+}
+```
+
+d) Change kotlin `jvmTarget` to `11`:
+
+```
+compileKotlin {
+    kotlinOptions.jvmTarget = "11"
+}
+
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "11"
+}
+```
+
+e) The gradle doesn't support `JPMS` correctly, so we don't need to add `module-info.java` for project.
+
+In Intellij Idea, you should change the `Project SDK` to `11` in `File -> Project Structure -> Project Settings -> Project`.
+
+### Maven
 
 a) Upgrade to OpenJDK 11 via your system's packaging tools.
 
