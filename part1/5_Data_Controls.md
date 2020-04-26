@@ -56,7 +56,7 @@ private val persons = listOf(
         Person(2,"Tom Marks",LocalDate.of(2001,1,23)),
         Person(3,"Stuart Gills",LocalDate.of(1989,5,23)),
         Person(3,"Nicole Williams",LocalDate.of(1998,8,11))
-).observable()
+).asObservable()
 ```
 
 You can quickly declare a `TableView` with all of its columns using a functional construct, and specify the `items` property to an `ObservableList<Person>` \(Figure 5.3\).
@@ -255,16 +255,16 @@ val regions = listOf(
         Region(1,"Pacific Northwest", "USA",listOf(
                 Branch(1,"D","Seattle","WA"),
                 Branch(2,"W","Portland","OR")
-        ).observable()),
+        ).asObservable()),
         Region(2,"Alberta", "Canada",listOf(
                 Branch(3,"W","Calgary","AB")
-        ).observable()),
+        ).asObservable()),
         Region(3,"Midwest", "USA", listOf(
                 Branch(4,"D","Chicago","IL"),
                 Branch(5,"D","Frankfort","KY"),
                 Branch(6, "W","Indianapolis", "IN")
-        ).observable())
-).observable()
+        ).asObservable())
+).asObservable()
 ```
 
 We can create a `TableView` where each row has a `rowExpander()` function defined, and there we can arbitrarily create any `Node` control built off that particular row's item. In this case, we can nest another `TableView` for a given `Region` to show all the `Branch` items belonging to it. It will have a "+" button column to expand and show this expanded control \(Figure 5.5\).
@@ -452,7 +452,7 @@ val persons = listOf(
             Person("Erlick Foyes", "Customer Service", "erlick.foyes@contoso.com"),
             Person("Steve Folley", "Customer Service", "steve.folley@contoso.com"),
             Person("Larry Cable", "Customer Service", "larry.cable@contoso.com")))
-).observable()
+).asObservable()
 ```
 
 You can create a `TreeTableView` by merging the components needed for a `TableView` and `TreeView` together. You will need to call the `populate()` function as well as set the root `TreeItem`.
