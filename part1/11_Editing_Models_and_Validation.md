@@ -8,7 +8,7 @@ Typically you will use the `ItemViewModel` when you are creating a facade in fro
 
 ## A Typical Use Case
 
-Say you have a given domain type `Person`. We allow its two properties to be nullable so they can be inputted later by the user.
+Let's say we have a certain domain type `Person`. We will allow its two properties to be nullable so that they can be entered later by the user.
 
 ```kotlin
 import tornadofx.*
