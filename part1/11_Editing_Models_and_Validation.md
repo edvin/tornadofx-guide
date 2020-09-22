@@ -30,7 +30,7 @@ Consider a Master/Detail view where you have a `TableView` displaying a list of 
 
 **Figure 11.1**
 
-Below is code for our first attempt in building this, and it has a number of problems we will address.
+The code below is our first attempt to build this, and it has some problems that we will address.
 
 ```kotlin
 import javafx.scene.control.TableView
@@ -359,7 +359,7 @@ model.person = person2
 model.rebind()
 ```
 
-The form you choose is up to you, but the first form makes sure you do not forget to call rebind. After `rebind` is called, the model is not dirty and all values will reflect the ones form the new source object or source objects. It's important to note that you can pass multiple source objects to a view model and update all or some of them as you see fit.
+The form you choose is up to you, but the first form makes sure you do not forget to call rebind. After `rebind` is called, the model is not dirty and all values will reflect the ones from the new source object or source objects. It's important to note that you can pass multiple source objects to a view model and update all or some of them as you see fit.
 
 ### Rebind Listener
 
