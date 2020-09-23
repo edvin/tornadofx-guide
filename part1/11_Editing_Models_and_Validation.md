@@ -424,15 +424,11 @@ The person is extracted from the `itemProperty` using the `item` getter.
 
 ### OnCommit callback
 
-Sometimes it's desirable to do a specific action after the model was successfully committed.  
-The `ViewModel` offers two callbacks, `onCommit` and `onCommit(commits: List<Commit>)`, for that.
+Sometimes it's desirable to do a specific action after the model was successfully committed. The `ViewModel` offers two callbacks, `onCommit` and `onCommit(commits: List<Commit>)`, for that.
 
-The first function `onCommit`, has no parameters and will be called after a successful commit,  
-right before the optional `successFn` is invoked \(see: `commit`\).  
+The first function `onCommit`, has no parameters and will be called after a successful commit, right before the optional `successFn` is invoked \(see: `commit`\).  
 
-The second function will be called in the same order and with the addition of passing a list of committed properties along.  
-Each `Commit` in the list, consists of the original `ObservableValue`, the `oldValue` and the `newValue`  
-and a property `changed`, to signal if the `oldValue` is different then the `newValue`.
+The second function will be called in the same order and with the addition of passing a list of committed properties along. Each `Commit` in the list, consists of the original `ObservableValue`, the `oldValue` and the `newValue` and a property `changed`, to signal if the `oldValue` is different then the `newValue`.
 
 Let's look at an example of how we can retrieve only the changed objects and print them to `stdout`.
 
