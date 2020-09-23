@@ -4,7 +4,7 @@ TornadoFX doesn't force any particular architectural pattern on you as a develop
 
 To help with implementing these patterns TornadoFX provides a tool called `ViewModel` that helps cleanly separate your UI and business logic, giving you features like _rollback_/_commit_ and _dirty state checking_. These patterns are hard or cumbersome to implement manually, so it is advised to leverage the `ViewModel` and `ItemViewModel` when it is needed.
 
-Typically you will use the `ItemViewModel` when you are creating a facade in front of a single object, and a  `ViewModel`for more complex situations.
+Typically you will use the `ItemViewModel` when you are creating a facade in front of a single object, and a  `ViewModel` for more complex situations.
 
 ## A Typical Use Case
 
@@ -315,13 +315,13 @@ val person = model.backingValue(property)
 
 ## Specific Property Subtypes \(IntegerProperty, BooleanProperty\)
 
-If you bind, for example, an `IntegerProperty`, the type of the facade property will look like `Property<Int>` but it is infact an `IntegerProperty` under the hood. If you need to access the special functions provided by `IntegerProperty`, you will have to cast the bind result:
+If you bind, for example, an `IntegerProperty`, the type of the facade property will look like `Property<Int>` but it is in fact an `IntegerProperty` under the hood. If you need to access the special functions provided by `IntegerProperty`, you will have to cast the bind result:
 
 ```kotlin
 val age = bind(Person::ageProperty) as IntegerProperty
 ```
 
-Similarily, you can expose a read only property by specifying a read only type:
+Similarly, you can expose a read only property by specifying a read only type:
 
 ```kotlin
 val age = bind(Person::ageProperty) as ReadOnlyIntegerProperty
@@ -377,7 +377,7 @@ The above example is included to clarify how the `rebindOnChange()` function wor
 
 ## ItemViewModel
 
-When working with the `ViewModel` you will notice some repetitive and somewhat verbose tasks. They include calling `rebind` or configuring `rebindOnChange` to change the source object. The `ItemViewModel` is an extension to the `ViewModel` and in almost all use cases you would want to inherit from this instead of the `ViewModel` class.
+When working with the `ViewModel` you will notice some repetitive and somewhat verbose tasks. They include calling `rebind` or configuring `rebindOnChange` to change the source object. The `ItemViewModel` is an extension to `ViewModel` and in almost all use cases, you will end up inheriting from it instead of the `ViewModel` class.
 
 The `ItemViewModel` has a property called `itemProperty` of the specified type, so our `PersonModel` would now look like:
 
@@ -388,8 +388,7 @@ class PersonModel : ItemViewModel<Person>() {
 }
 ```
 
-You will notice we no longer need to pass in the `var person: Person` in the constructor. The `ItemViewModel` now has an observable property called  
-`itemProperty` and getters/setters via the `item` property. Whenever you assign something to `item` or via `itemProperty.value`, the model is automatically rebound for you. There is also an observable `empty` boolean value you can use to check if the `ItemViewModel` is currently holding a `Person`.
+You will notice we no longer need to pass in the `var person: Person` in the constructor. The `ItemViewModel` now has an observable property called `itemProperty` and getters/setters via the `item` property. Whenever you assign something to `item` or via `itemProperty.value`, the model is automatically rebound for you. There is also an observable `empty` boolean value you can use to check if the `ItemViewModel` is currently holding a `Person`.
 
 The binding expressions need to take into account that it might not represent any item at the time of binding. That is why the binding expressions above now use the null safe operator.
 
@@ -428,13 +427,14 @@ The person is extracted from the `itemProperty` using the `item` getter.
 Sometimes it's desirable to do a specific action after the model was successfully committed.  
 The `ViewModel` offers two callbacks, `onCommit` and `onCommit(commits: List<Commit>)`, for that.
 
-The first function`onCommit`, has no parameters and will be called after a successful commit,  
+The first function `onCommit`, has no parameters and will be called after a successful commit,  
 right before the optional `successFn` is invoked \(see: `commit`\).  
+
 The second function will be called in the same order and with the addition of passing a list of committed properties along.  
 Each `Commit` in the list, consists of the original `ObservableValue`, the `oldValue` and the `newValue`  
 and a property `changed`, to signal if the `oldValue` is different then the `newValue`.
 
-Let's look at an example how we can retrieve only the changed objects and print them to `stdout`.
+Let's look at an example of how we can retrieve only the changed objects and print them to `stdout`.
 
 To find out which object changed we defined a little extension function, which will find the given property and if it was changed will return the old and new value or null if there was no change.
 
@@ -475,7 +475,7 @@ class PersonList : View("Person List") {
 }
 ```
 
-The person `TableView` now becomes a lot cleaner and easier to reason with. In a real application the list of persons would probably come from a controller or a remoting call though. The model is simply injected into the `View`, and we will do the same for the editor:
+The person `TableView` now becomes a lot cleaner and easier to reason with. However, in a real application, the list of persons would likely come from a controller or a remote call. The model is simply injected into the `View`, and we will do the same for the editor:
 
 ```kotlin
 class PersonEditor : View("Person Editor") {
@@ -508,15 +508,13 @@ class PersonEditor : View("Person Editor") {
 }
 ```
 
-The injected instance of the model will be the exact same one in both views. Again, in a real application the save call would probably be offloaded  
-to a controller asynchronously.
+The injected instance of the model will be exactly the same one in both views. Again, in a real application the save call would probably be offloaded to a controller asynchronously.
 
 ## When to Use `ViewModel` vs `ItemViewModel`
 
-This chapter has progressed from the low-level implementation `ViewModel` into a streamlined `ItemViewModel`. You might wonder if there are any use cases for inheriting from  
-`ViewModel` instead of `ItemViewModel` at all. The answer is that while you would typically extend `ItemViewModel` more than 90% of the time, there are some use cases where it does not make sense. Since ViewModels can be injected and used to keep navigational state and overall UI state, you might use it for situations where you do not have a single domain object - you could have multiple domain objects or just a collection of loose properties. In this use case the `ItemViewModel` does not make any sense, and you might implement the `ViewModel` directly. For common cases though, `ItemViewModel` is your best friend.
+This chapter has progressed from the low-level implementation `ViewModel` into a streamlined `ItemViewModel`. You might wonder if there are any use cases for inheriting from `ViewModel` instead of `ItemViewModel` at all. The answer is that while you would typically extend `ItemViewModel` more than 90% of the time, there are some use cases where it does not make sense. Since ViewModels can be injected and used to keep navigational state and overall UI state, you might use it for situations where you do not have a single domain object - you could have multiple domain objects or just a collection of loose properties. In this use case the `ItemViewModel` does not make any sense, and you might implement the `ViewModel` directly. For common cases though, `ItemViewModel` is your best friend.
 
-> There is one potential issue with this approach. If we want to display multiple "pairs" of lists and forms, perhaps in different windows, we need a way to separate and bind the model belonging to a spesific pair of list and form. There are many ways to deal with that, but one tool very well suited for this is the scopes. Check out the scope documentation for more information about this approach.
+> There is one potential issue with this approach. If we want to display multiple "pairs" of lists and forms, perhaps in different windows, we need a way to separate and bind the model belonging to a specific pair of list and form. There are many ways to deal with that, but one tool very well suited for this is the scopes. Check out the scope documentation for more information about this approach.
 
 # Validation
 
@@ -543,8 +541,7 @@ There are multiple severity levels representing successful input to easier provi
 
 ### ValidationTrigger
 
-By default validation will happen when the input value changes. The input value is always an `ObservableValue<T>`, and the default trigger simply listens for changes. You can however choose  
-to validate when the input field looses focus, or when a save button is clicked for instance. The following ValidationTriggers can be configured for each validator:
+By default, validation will happen when the input value changes. The input value is always an `ObservableValue<T>`, and the default trigger simply listens for changes. You can however choose to validate when the input field looses focus, or when a save button is clicked for instance. The following ValidationTriggers can be configured for each validator:
 
 * `OnChange` - Validate when input value changes, optionally after a given delay in milliseconds
 * `OnBlur` - Validate when the input field looses focus
@@ -556,13 +553,13 @@ Normally you would validate user input from multiple controls or input fields at
 
 ## Decorator
 
-The `decorationProvider` of a `ValidationContext` is in charge of providing feedback when a `ValidationMessage` is associated with an input. By default this is an instance of `SimpleMessageDecorator`which will mark the input field with a colored triangle in the topper left corner and display a popup with the message while the input has focus.
+The `decorationProvider` of a `ValidationContext` is in charge of providing feedback when a `ValidationMessage` is associated with an input. By default this is an instance of `SimpleMessageDecorator` which will mark the input field with a colored triangle in the topper left corner and display a popup with the message while the input has focus.
 
 ![](https://i.imgur.com/3tw57fS.png)
 
 **Figure 11.2** The default decorator showing a required field validation message
 
-If you don't like the default decorator look you can easily create your own by implementing the `Decorator` interface:
+If you don't like the look of the default decorator you can easily create your own by implementing the `Decorator` interface:
 
 ```kotlin
 interface Decorator {
@@ -581,8 +578,7 @@ context.decorationProvider = MyDecorator()
 
 ## Ad Hoc Validation
 
-While you will probably never do this in a real application, it is possible to set up a `ValidationContext` and apply validators to it manually. The following  
-example is actually taken from the internal tests of the framework. It illustrates the concept, but is not a practical pattern in an application.
+While you will probably never do this in a real application, it is possible to set up a `ValidationContext` and apply validators to it manually. The following example is actually taken from the internal tests of the framework. It illustrates the concept, but is not a practical pattern in an application.
 
 ```kotlin
 // Create a validation context
@@ -614,16 +610,11 @@ assertTrue(validator.validate())
 assertNull(validator.result)
 ```
 
-Take special note of the last parameter to the `addValidator` call. This is the actual validation logic. The function is passed the  
-current input for the property it validates and must return null if there are no messages, or an instance of `ValidationMessage` if something  
-is noteworthy about the input. A message with severity `Error` will cause the validation to fail. As you can see, you don't need to instantiate  
-a ValidationMessage yourself, simply use one of the functions `error`, `warning`, `success` or `info` instead.
+Pay special attention to the last parameter of the `addValidator` call. It is the actual validation logic. The function receives the current input for the property that it validates and must return null if there are no messages, or an instance of `ValidationMessage` if something is noteworthy about the input. A message with severity `Error` will cause the validation to fail. As you can see, you don't need to instantiate a ValidationMessage yourself, simply use one of the functions `error`, `warning`, `success` or `info` instead.
 
 # Validation with ViewModel
 
-Every ViewModel contains a `ValidationContext`, so you don't need to instantiate one yourself. The Validation framework integrates with the type  
-safe builders as well, and even provides some built in validators, like the `required` validator. Going back to our person editor, we can  
-make the input fields required with this simple change:
+Every ViewModel contains a `ValidationContext`, so you don't need to instantiate one yourself. The Validation framework integrates with the type safe builders as well, and even provides some built in validators, like the `required` validator. Going back to our person editor, we can make the input fields required with this simple change:
 
 ```kotlin
 field("Name") {
@@ -631,8 +622,7 @@ field("Name") {
 }
 ```
 
-That's all there is to it. The required validator optionally takes a message that will be presented to the user if the validation fails. The default text  
-is "This field is required".
+That's all there is to it. The required validator optionally takes a message that will be presented to the user if the validation fails. The default text is "This field is required".
 
 Instead of using the built in `required` validator we can express the same thing manually:
 
@@ -659,10 +649,7 @@ field("Name") {
 
 ## Binding buttons to validation state
 
-You might want to only enable certain buttons in your forms when the input is valid. The `model.valid` property can be used for this purpose. Since  
-the default validation trigger is `OnChange`, the valid state would only be accurate when you first try to commit the model. However, if you want  
-to bind a button to the `valid` state of the model you can call `model.validate(decorateErrors = false)` to force all validators to report their results without  
-actually showing any validation errors to the user.
+You might want to only enable certain buttons in your forms when the input is valid. The `model.valid` property can be used for this purpose. Since the default validation trigger is `OnChange`, the valid state would only be accurate when you first try to commit the model. However, if you want to bind a button to the `valid` state of the model you can call `model.validate(decorateErrors = false)` to force all validators to report their results without actually showing any validation errors to the user.
 
 ```kotlin
 field("username") {
@@ -685,16 +672,11 @@ buttonbar {
 model.validate(decorateErrors = false)
 ```
 
-Notice how the login button's enabled state is bound to the enabled state of the model via `enableWhen { model.valid }` call. After all  
-the fields and validators are configured, the `model.validate(decorateErrors = false)` make sure the valid state of the model is updated  
-without triggering error decorations on the fields that fail validation. The decorators will kick in on value change by default, unless you  
-override the `trigger` parameter to `validator`. The `required()` build in validator also accepts this parameter. For example, to run the validator  
-only when the input field looses focus you can call `textfield(username).required(ValidationTrigger.OnBlur)`.
+Notice how the login button's enabled state is bound to the enabled state of the model via `enableWhen { model.valid }` call. After all the fields and validators are configured, the `model.validate(decorateErrors = false)` make sure the valid state of the model is updated without triggering error decorations on the fields that fail validation. The decorators will kick in on value change by default, unless you override the `trigger` parameter to `validator`. The `required()` built in validator also accepts this parameter. For example, to only run the validator when the input field looses focus you can call `textfield(username).required(ValidationTrigger.OnBlur)`.
 
 # Validation in dialogs
 
-The `dialog` builder creates a window with a form and a fieldset and let's you start adding fields to it. Some times you don't have a ViewModel for such cases, but you might still want to  
-use the features it provides. For such situations you can instantiate a ViewModel inline and hook up one or more properties to it. Here is an example dialog that requires the user to enter some input in a textarea:
+The `dialog` builder creates a window with a form and a fieldset and let's you start adding fields to it. Some times you don't have a ViewModel for such cases, but you might still want to use the features it provides. For such situations you can instantiate a ViewModel inline and hook up one or more properties to it. Here is an example dialog that requires the user to enter some input in a textarea:
 
 ```kotlin
 dialog("Add note") {
@@ -723,8 +705,7 @@ Notice how the `note` property is connected to the context by specifying it's be
 
 ## Partial commit
 
-It's also possible to do a partial commit by suppling a list of fields you want to commit to avoid committing everything. This can be convenient in situations where you edit the same  
-ViewModel instance from different Views, for example in a Wizard. See the Wizard chapter for more information about partial commit, and the corresponding partial validation features.
+It's also possible to do a partial commit by supplying a list of fields you want to commit in order to avoid committing everything. This can be convenient in situations where you edit the same ViewModel instance from different Views, for example in a Wizard. See the Wizard chapter for more information about partial commit, and the corresponding partial validation features.
 
 # TableViewEditModel
 
@@ -751,7 +732,6 @@ class MyView : View("My View") {
             }
         }
         center = tableview<Customer> {
-
             items = controller.customers
             isEditable = true
 
@@ -789,7 +769,7 @@ class Customer(id: Int, lastName: String, firstName: String) {
 
 **Figure 11.4** A `TableView` with dirty state tracking, with `rollback()` and `commit()` functionality.
 
-Note also there are many other helpful properties and functions on the `TableViewEditModel`. The `items` property is an `ObservableMap<S, TableColumnDirtyState<S>>` mapping the dirty state of each record item `S`. If you want to filter out and commit only dirty records so you can persist them somewhere, you can have your "Commit" `Button` perform this action instead.
+Note also that there are many other helpful properties and functions on the `TableViewEditModel`. The `items` property is an `ObservableMap<S, TableColumnDirtyState<S>>` mapping the dirty state of each record item `S`. If you want to filter out and commit only dirty records so you can persist them somewhere, you can have your "Commit" `Button` perform this action instead.
 
 ```kotlin
 button("COMMIT").action {
