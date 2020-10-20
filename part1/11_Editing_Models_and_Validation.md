@@ -135,7 +135,7 @@ Another issue is when it is time to save the edited person, the save function ha
 
 ## Introducing ViewModel
 
-The `ViewModel` is a mediator between the `TableView` and the `Form`. It acts as a middleman between the data in the text fields and the data in the actual `Person` object. As you will see, the code is much shorter and easier to reason about. The implementation code of the `PersonModel` will be shown shortly. For now just focus on its usage. Please note that this is not the recommended syntax, this merely serves as an explanation of the concepts.
+The `ViewModel` is a mediator between the `TableView` and the `Form`. It acts as a middleman between the data in the text fields and the data in the actual `Person` object. As you will see, the code is much shorter and easier to reason about. Please note that this is not the recommended syntax, this merely serves as an explanation of the concepts.
 
 ```kotlin
 class PersonEditor : View("Person Editor") {
@@ -199,17 +199,17 @@ class PersonModel(person: Person) : ItemViewModel<Person>(person) {
 }
 ```
 
-This looks a lot better, but what exactly is going on here? We have introduced a subclass of `ViewModel` called `PersonModel`. The model holds a `Person` object and has properties for the `name` and `title` fields. We will discuss the model further after we have looked at the rest of the client code.
+This looks a lot better, but what exactly is going on here? We have introduced a subclass of `ItemViewModel` called `PersonModel`. The model holds a `Person` object and has properties for the `name` and `title` fields. We will discuss the model further after we have looked at the rest of the client code.
 
 Note that we hold no reference to the `TableView` or the text fields. Apart from a lot less code, the first big change is the way we update the `Person` inside the model:
 
 ```kotlin
 model.rebindOnChange(this) { selectedPerson ->
-    person = selectedPerson ?: Person()
+    item = selectedPerson ?: Person()
 }
 ```
 
-The `rebindOnChange()` function takes the `TableView` as an argument and a function that will be called when the selection changes. This works with `ListView`,`TreeView`, `TreeTableView`, and any other `ObservableValue` as well. This function is called on the model and has the `selectedPerson` as its single argument. We assign the selected person to the `person` property of the model, or a new  `Person` if the selection was empty/null. That way we ensure that there is always data for the model to present.
+The `rebindOnChange()` function takes the `TableView` as an argument and a function that will be called when the selection changes. This works with `ListView`,`TreeView`, `TreeTableView`, and any other `ObservableValue` as well. This function is called on the model and has the `selectedPerson` as its single argument. We assign the selected person to the `item` property of the model, or a new  `Person` if the selection was empty/null. That way we ensure that there is always data for the model to present. Since we're calling this function from inside the `TreeView` builder, there is a function to simplify this even further: the 3 lines above can be replaced with simply `bindSelected(model)`. 
 
 When we create the TextFields, we bind the model properties directly to it since most `Node` builders accept an `ObservableValue` to bind to.
 
@@ -237,8 +237,6 @@ When the button is pressed, any changes are discarded and the text fields show t
 
 ## The PersonModel
 
-We never explained how the `PersonModel` works yet, and you probably have been wondering about how the `PersonModel` is implemented. Here it is:
-
 ```kotlin
 class PersonModel(person: Person) : ItemViewModel<Person>(person) {
     val name = bind(Person::nameProperty)
@@ -246,7 +244,7 @@ class PersonModel(person: Person) : ItemViewModel<Person>(person) {
 }
 ```
 
-It can hold a `Person` object, and it has defined two strange-looking properties called `name` and `title` via the `bind` delegate. Yeah it looks weird, but there is a very good reason for it. The `{ person.nameProperty }` parameter for the `bind` function is a lambda that returns a property. This returned property is examined by the `ViewModel`, and a new property of the same type is created. It is then put into the `name` property of the `ViewModel`.
+We never explained how the `PersonModel` works yet. It can hold a `Person` object, and it has defined two strange-looking properties called `name` and `title` via the `bind` delegate. Yeah it looks weird, but there is a very good reason for it. The `Person::nameProperty` parameter for the `bind` function is a KProperty (in other words, it is used to get the actual `Person.nameProperty` from any `Person` instance). This way, whenever the `Person` object is changed (using `rebindOnChange()` or `model.item = ...`, the `name` and `title` properties can be changed accordingly to reflect the properties of the new `Person` object.
 
 When we bind a text field to the `name` property of the model, only the copy is updated when you type into the text field. The `ViewModel` keeps track of which actual property belongs to which facade, and when you call `commit` the values from the facade are flushed into the actual backing property. On the flip side, when you call `rollback` the exact opposite happens: The actual property value is flushed into the facade.
 
@@ -310,7 +308,7 @@ val nameDirtyProperty = model.dirtyStateFor(PersonModel::name)
 To retrieve the backing object value for a property you can call `model.backingValue(property)`.
 
 ```kotlin
-val person = model.backingValue(property)
+val value = model.backingValue(property)
 ```
 
 ## Specific Property Subtypes \(IntegerProperty, BooleanProperty\)
@@ -331,7 +329,7 @@ The reason for this is an unfortunate shortcoming on the type system that preven
 
 ## Rebinding
 
-As you saw in the `TableView` example above, it is possible to change the domain object that is wrapped by the `ViewModel`. This test case sheds some more light on that:
+As you saw in the `TableView` example above, it is possible to change the domain object that is wrapped by the `ItemViewModel`. This test case sheds some more light on that:
 
 ```kotlin
 @Test fun swap_source_object() {
@@ -341,25 +339,18 @@ As you saw in the `TableView` example above, it is possible to change the domain
     val model = PersonModel(person1)
     assertEquals(model.name, "Person 1")
 
-    model.rebind { person = person2 }
+    model.item = person2
     assertEquals(model.name, "Person 2")
 }
 ```
 
-The test creates two `Person` objects and a `ViewModel`. The model is initialised with the first person object. It then checks that `model.name` corresponds to the name in `person1`. Now something weird happens:
+The test creates two `Person` objects and an `ItemViewModel`. The model is initialised with the first person object. It then checks that `model.name` corresponds to the name in `person1`. Now something weird happens:
 
 ```kotlin
-model.rebind { person = person2 }
+model.item = person2
 ```
 
-The code inside the `rebind()` block above will be executed and all the properties of the model are updated with values from the new source object. This is actually analogous to writing:
-
-```kotlin
-model.person = person2
-model.rebind()
-```
-
-The form you choose is up to you, but the first form makes sure you do not forget to call rebind. After `rebind` is called, the model is not dirty and all values will reflect the ones from the new source object or source objects. It's important to note that you can pass multiple source objects to a view model and update all or some of them as you see fit.
+The ItemViewProperty has an `itemProperty` which holds the current item (accessible via the `item` Kotlin property, just like our `Person`'s `nameProperty` can be accessed using `name`). Whenever this property changes, the `ItemViewModel` updates all of its properties (such as `name` and `age` in our case) to reflect the new `Person` object.
 
 ### Rebind Listener
 
@@ -375,52 +366,34 @@ model.rebindOnChange(table.selectionModel.selectedItemProperty()) {
 
 The above example is included to clarify how the `rebindOnChange()` function works under the hood. For real use cases involving a `TableView`, you should opt for the `bindSelected(model)` function that is available when you combine `TableView` and `ItemViewModel`.
 
-## ItemViewModel
+## The low-level ViewModel
 
-When working with the `ViewModel` you will notice some repetitive and somewhat verbose tasks. They include calling `rebind` or configuring `rebindOnChange` to change the source object. The `ItemViewModel` is an extension to `ViewModel` and in almost all use cases, you will end up inheriting from it instead of the `ViewModel` class.
+The `ItemViewModel` is an extension to `ViewModel`, where all properties correspond to a given object's properties (a `Person` object in our case). It also provides a simple way to rebind all of its properties at the same time by changing the `item` property to a new value.
 
-The `ItemViewModel` has a property called `itemProperty` of the specified type, so our `PersonModel` would now look like:
+A ViewModel allows you to bind to any property you would like (not necessarily encapsulated in a special class such as Person) and apply the same functionality to it: obtain a new property that can be edited by the user, then commited or rolled back to the original as needed. Instead of using `bind(Person::name)`, you can use a lambda: `bind { obtainProperty() }`, where the lambda would return different properties depending on the situation, in a similar manner our Person object changes in the ItemViewModel. It should be noted, though, that the lambda will not be re-evaluated until the `rollback()` function is called (Note: in the case of the ItemViewModel, this function is called automatically after changing the value of the item property). Specifically, should the properties be changed, the function to do so is `rebind { }`. Under the hood, all this function does is to execute the lambda and then call `rollback()`.
+
+A very simple implementation of a ViewModel:
 
 ```kotlin
-class PersonModel : ItemViewModel<Person>() {
-    val name = bind(Person::nameProperty) 
-    val title = bind(Person::titleProperty)
+class MyViewModel(initialProperty : Property<String>) : ViewModel() {
+    var myProperty : Property<String> = initialProperty
+    val propertyFacade = bind { myProperty }
 }
 ```
 
-You will notice we no longer need to pass in the `var person: Person` in the constructor. The `ItemViewModel` now has an observable property called `itemProperty` and getters/setters via the `item` property. Whenever you assign something to `item` or via `itemProperty.value`, the model is automatically rebound for you. There is also an observable `empty` boolean value you can use to check if the `ItemViewModel` is currently holding a `Person`.
-
-The binding expressions need to take into account that it might not represent any item at the time of binding. That is why the binding expressions above now use the null safe operator.
-
-We just got rid of some boiler plate, but the `ItemViewModel` gives us a lot more functionality. Remember how we bound the selected person from the `TableView` to our model earlier?
+If we would like to update the property, we can do it like so:
 
 ```kotlin
-// Update the person inside the view model on selection change
-model.rebindOnChange(this) { selectedPerson ->
-    person = selectedPerson ?: Person()
+var model = MyViewModel(someInitialProperty)
+// more code...
+model.rebind {
+    myProperty = someOtherProperty
 }
 ```
 
-Using the `ItemViewModel` this can be rewritten:
+Basically, instead of having to rely on a `Person` class to bind to its properties, we can bind to any property. Now you may wonder if there are any cases would be for a low-level implementation `ViewModel` when you could simply use the streamlined `ItemViewModel`. The answer is that while you would typically extend ItemViewModel more than 90% of the time, there are some use cases where it does not make sense. Since ViewModels can be injected and used to keep navigational state and overall UI state, you might use it for situations where you do not have a single domain object - you could have multiple domain objects or just a collection of loose properties. In this use case the ItemViewModel does not make any sense, and you might implement the ViewModel directly. For common cases though, ItemViewModel is your best friend.
 
-```kotlin
-// Update the person inside the view model on selection change
-bindSelected(model)
-```
-
-This will effectively attach the listener we had to write manually before and make sure that the `TableView` selection is visible in the model.
-
-The `save()` function will now also be slightly different, since there is no `person` property in our model:
-
-```kotlin
-private fun save() {
-    model.commit()
-    val person = model.item
-    println("Saving ${person.name} / ${person.title}")
-}
-```
-
-The person is extracted from the `itemProperty` using the `item` getter.
+> There is one potential issue with this approach. If we want to display multiple "pairs" of lists and forms, perhaps in different windows, we need a way to separate and bind the model belonging to a specific pair of list and form. There are many ways to deal with that, but one tool very well suited for this is the scopes. Check out the scope documentation for more information about this approach.
 
 ### OnCommit callback
 
