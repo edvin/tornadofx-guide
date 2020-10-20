@@ -102,7 +102,7 @@ Both approaches work equally well, but depending on your use case you might pref
 
 ## Global application scope
 
-As we hintet to initially, you can run multiple applications in the same JVM and keep them completely separate by using scopes. By default, JavaFX does not support multi tenancy, and can only start a single JavaFX application per JVM, but new technologies are emerging that leverages multitenancy and will even expose your JavaFX based applications to the web. One such technology is JPro.one, and TornadoFX supports multitenancy for JPro applications by leveraging scopes.
+As we hinted to initially, you can run multiple applications in the same JVM and keep them completely separate by using scopes. By default, JavaFX does not support multi tenancy, and can only start a single JavaFX application per JVM, but new technologies are emerging that leverages multitenancy and will even expose your JavaFX based applications to the web. One such technology is JPro.one, and TornadoFX supports multitenancy for JPro applications by leveraging scopes.
 
 There is no special JPro classes in TornadoFX, but supporting JPro is very simple by leveranging scopes:
 
