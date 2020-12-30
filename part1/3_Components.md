@@ -497,7 +497,7 @@ Sometimes it is necessary to get a hold of the current scene from within a `View
 
 ## Accessing Resources
 
-Lots of JavaFX APIs takes resources as a `URL` or the `toExternalForm` of an URL. To retrieve a resource url one would typically write something like:
+Lots of JavaFX APIs takes resources as a `URL` or the `toExternalForm` of a URL. To retrieve a resource url one would typically write something like:
 
 ```kotlin
 val myAudioClip = AudioClip(MyView::class.java.getResource("mysound.wav").toExternalForm())
