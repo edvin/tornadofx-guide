@@ -281,7 +281,7 @@ button("Update text") {
 
 When the button is clicked, the action inside the `action` builder is run. It makes a call out to `myController.loadText()`and applies the result to the text property of the textfield when it returns. The UI stays responsive while the controller function runs.
 
-Under the covers, `runAsync` creates a JavaFX `Task` objects, and spins off a separate thread to run your call inside the `Task`. You can even assign this `Task` to a variable and bind it to a UI to show progress while your operation is running.
+Under the covers, `runAsync` creates a JavaFX `Task` object, and spins off a separate thread to run your call inside the `Task`. You can even assign this `Task` to a variable and bind it to a UI to show progress while your operation is running.
 
 In fact, this is so common that there is also a default ViewModel called `TaskStatus` which contains observable values
  for `running`, `message`, `title`, and `progress`. You can supply the `runAsync` call with a specific instance of the `TaskStatus` object, or use the default. There is also a version of `runAsync` called `runAsyncWithProgress` which will cover the current `Node` with a progress indicator while the long running operation runs.
