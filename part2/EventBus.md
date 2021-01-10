@@ -174,7 +174,7 @@ subscribe<CustomerListEvent> { event ->
 In many event bus implementations, you are left with the task of deregistering the subscribers when your UI components
 should no longer receive them. TornadoFX takes an opinionated approach to event cleanup so you do not have to think about it much.
 
-Subscriptions inside `UIComponents` like `View` and `Fragment` are only active when that component is docked. That means that even if you have a `View` that has been previously initialized and used,event subscriptions will not reach it unless the `View` is docked inside a window or some other component. Once the view is docked, the events will reach it. Once it is undocked, the events will no longer be delivered to your component. This takes care of the need for you to manually deregister subscribers when you discard of a view.
+Subscriptions inside `UIComponents` like `View` and `Fragment` are only active when that component is docked. That means that even if you have a `View` that has been previously initialized and used, event subscriptions will not reach it unless the `View` is docked inside a window or some other component. Once the view is docked, the events will reach it. Once it is undocked, the events will no longer be delivered to your component. This takes care of the need for you to manually deregister subscribers when you discard of a view.
 
 For `Controllers` however, subscriptions are always active until you call `unsubscribe`. You need to keep
 in mind that controllers are lazily loaded, so if nothing references your controller, the subscriptions will
